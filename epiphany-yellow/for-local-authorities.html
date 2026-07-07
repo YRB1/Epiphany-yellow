@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>For Local Authorities — Epiphany Foster Care</title>
+<meta name="description" content="Epiphany Foster Care works with Local Authorities across the East Midlands to provide culturally affirming, specialist foster placements. UASC, long-term, short-term and emergency fostering.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%231a0f40'/><path d='M12 3L13.8 8.7L19.5 10.5L13.8 12.3L12 18L10.2 12.3L4.5 10.5L10.2 8.7Z' fill='%23E8A020'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="theme-yellow.css">
+<style>
+/* ── Page-specific overrides ── */
+.la-hero{background:linear-gradient(135deg,var(--purple-d) 0%,var(--purple) 55%,#3d2a8a 100%);color:#fff;padding:7rem 0 5rem;position:relative;overflow:hidden}
+.la-hero::before{content:'';position:absolute;top:-100px;right:-100px;width:420px;height:420px;background:radial-gradient(circle,rgba(232,160,32,.18),transparent 70%);pointer-events:none}
+.la-hero::after{content:'';position:absolute;bottom:-120px;left:-80px;width:360px;height:360px;background:radial-gradient(circle,rgba(42,157,143,.14),transparent 70%);pointer-events:none}
+.la-hero-inner{position:relative;z-index:1;max-width:700px}
+.la-eyebrow{display:inline-flex;align-items:center;gap:.5rem;background:rgba(232,160,32,.15);border:1px solid rgba(232,160,32,.3);color:var(--gold);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.35rem .9rem;border-radius:30px;margin-bottom:1.4rem}
+.la-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;line-height:1.1;margin-bottom:1.1rem}
+.la-hero p{font-size:1.1rem;color:rgba(255,255,255,.72);line-height:1.7;max-width:580px;margin-bottom:2rem}
+.hero-ctas{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-gold{background:var(--gold);color:#1f1300;font-weight:700;padding:.85rem 1.8rem;border-radius:12px;font-size:.96rem;display:inline-flex;align-items:center;gap:.5rem;transition:.2s;text-decoration:none}
+.btn-gold:hover{background:#d4901a;transform:translateY(-2px)}
+.btn-outline-white{border:2px solid rgba(255,255,255,.35);color:#fff;font-weight:700;padding:.82rem 1.6rem;border-radius:12px;font-size:.96rem;display:inline-flex;align-items:center;gap:.5rem;transition:.2s;text-decoration:none}
+.btn-outline-white:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.6)}
+
+/* Trust strip */
+.trust-strip{background:#fff;border-bottom:1px solid #ece9f4;padding:1.4rem 0}
+.trust-items{display:flex;align-items:center;justify-content:center;gap:3rem;flex-wrap:wrap}
+.trust-item{display:flex;align-items:center;gap:.6rem;font-size:.84rem;font-weight:600;color:#374151}
+.trust-item svg{color:var(--teal)}
+.trust-divider{width:1px;height:28px;background:#e5e7eb}
+
+/* Sections */
+.la-section{padding:5rem 0}
+.la-section.alt{background:#f8f7fc}
+.section-label{font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--teal);margin-bottom:.75rem}
+.section-h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);color:var(--purple-d);line-height:1.2;margin-bottom:1rem}
+.section-lead{font-size:1rem;color:#6b7280;line-height:1.75;max-width:600px}
+
+/* Two-col */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.two-col.flip{direction:rtl}
+.two-col.flip>*{direction:ltr}
+@media(max-width:800px){.two-col,.two-col.flip{grid-template-columns:1fr;gap:2.5rem}}
+
+/* Placement types */
+.placement-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2.5rem}
+@media(max-width:900px){.placement-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.placement-grid{grid-template-columns:1fr}}
+.ptype-card{background:#fff;border:1px solid #ece9f4;border-radius:16px;padding:1.5rem;position:relative;overflow:hidden;transition:.25s}
+.ptype-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:16px 16px 0 0}
+.ptype-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(26,15,64,.1)}
+.ptype-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.ptype-name{font-weight:700;font-size:1rem;color:var(--purple-d);margin-bottom:.4rem}
+.ptype-desc{font-size:.84rem;color:#6b7280;line-height:1.65}
+.ptype-time{display:inline-flex;align-items:center;gap:.3rem;margin-top:.85rem;font-size:.75rem;font-weight:600;color:#9ca3af}
+
+/* Process steps */
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:2.5rem;position:relative}
+.process-steps::before{content:'';position:absolute;top:28px;left:calc(12.5% + 14px);right:calc(12.5% + 14px);height:2px;background:linear-gradient(90deg,var(--purple),var(--teal));z-index:0}
+@media(max-width:800px){.process-steps{grid-template-columns:1fr 1fr}.process-steps::before{display:none}}
+@media(max-width:480px){.process-steps{grid-template-columns:1fr}}
+.pstep{text-align:center;position:relative;z-index:1}
+.pstep-num{width:56px;height:56px;border-radius:50%;background:var(--purple);color:#fff;font-family:'Playfair Display',serif;font-weight:700;font-size:1.3rem;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:4px solid #f8f7fc}
+.pstep-title{font-weight:700;font-size:.92rem;color:var(--purple-d);margin-bottom:.4rem}
+.pstep-desc{font-size:.8rem;color:#6b7280;line-height:1.6}
+
+/* UASC highlight */
+.uasc-banner{background:linear-gradient(135deg,var(--teal),#1f7a6e);border-radius:20px;padding:3rem;color:#fff;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center}
+@media(max-width:680px){.uasc-banner{grid-template-columns:1fr}}
+.uasc-banner h3{font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:.75rem}
+.uasc-banner p{color:rgba(255,255,255,.78);line-height:1.7;font-size:.95rem}
+.uasc-stats{display:flex;gap:2rem;margin-top:1.5rem}
+.uasc-stat{text-align:center}
+.uasc-stat-n{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700}
+.uasc-stat-l{font-size:.75rem;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.07em}
+
+/* Quality badges */
+.quality-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:2rem}
+.q-item{display:flex;gap:1rem;align-items:flex-start;background:#fff;border:1px solid #ece9f4;border-radius:14px;padding:1.2rem}
+.q-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
+.q-title{font-weight:700;font-size:.9rem;color:var(--purple-d);margin-bottom:.3rem}
+.q-desc{font-size:.8rem;color:#6b7280;line-height:1.6}
+@media(max-width:560px){.quality-grid{grid-template-columns:1fr}}
+
+/* Contact box */
+.contact-box{background:var(--purple-d);color:#fff;border-radius:20px;padding:3rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+@media(max-width:720px){.contact-box{grid-template-columns:1fr;padding:2rem}}
+.cb-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-bottom:.5rem}
+.cb-val{font-size:1.05rem;font-weight:700;color:#fff}
+.cb-sub{font-size:.8rem;color:rgba(255,255,255,.5);margin-top:.15rem}
+.cb-link{color:var(--gold);font-weight:700;text-decoration:none}
+.cb-link:hover{text-decoration:underline}
+.cb-form .inp{width:100%;padding:.75rem .95rem;border:1.5px solid rgba(255,255,255,.15);border-radius:11px;font-size:.9rem;font-family:inherit;background:rgba(255,255,255,.08);color:#fff;margin-bottom:.75rem}
+.cb-form .inp::placeholder{color:rgba(255,255,255,.35)}
+.cb-form .inp:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.12)}
+.cb-form textarea.inp{resize:vertical;min-height:90px}
+.cb-btn{width:100%;padding:.85rem;background:var(--gold);color:#1f1300;border:none;border-radius:11px;font-weight:700;font-size:.96rem;cursor:pointer;font-family:inherit;transition:.2s}
+.cb-btn:hover{background:#d4901a}
+
+/* Testimonial */
+.la-testimonial{background:linear-gradient(135deg,rgba(44,26,107,.04),rgba(42,157,143,.04));border:1px solid rgba(44,26,107,.1);border-radius:20px;padding:2.5rem;position:relative}
+.la-testimonial::before{content:'\201C';font-family:'Playfair Display',serif;font-size:6rem;color:var(--gold);opacity:.25;position:absolute;top:.5rem;left:1.5rem;line-height:1}
+blockquote{font-size:1.1rem;color:#374151;line-height:1.75;font-style:italic;padding-left:1rem;position:relative;z-index:1}
+.bq-author{margin-top:1.25rem;font-style:normal;font-weight:700;font-size:.85rem;color:var(--purple-d)}
+.bq-role{font-size:.78rem;color:#9ca3af;font-style:normal}
+</style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-dot"></div>
+
+<!-- NAV (reused from main site) -->
+<nav id="nav">
+  <div class="wrap nav-wrap">
+    <a href="index.html" class="logo" aria-label="Epiphany Foster Care home">
+      <div class="logo-box">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5Z" fill="#2C1A6B"/></svg>
+      </div>
+      <div>
+        <div class="logo-name">Epiphany Foster Care</div>
+        <div class="logo-sub">Independent Fostering Agency</div>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="index.html#about">About Us</a>
+      <a href="index.html#types">Services</a>
+      <a href="index.html#uasc">UASC</a>
+      <a href="team.html">Our Team</a>
+      <a href="for-local-authorities.html" style="color:var(--gold);font-weight:700">Local Authorities</a>
+      <a href="blog.html">Blog</a>
+    </div>
+    <div class="nav-right">
+      <a href="tel:08001234567" class="nav-tel">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.1 1.22 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.46-.46a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        0800 123 4567
+      </a>
+      <a href="mailto:referrals@epiphanyfostercare.org.uk" class="nav-refer">Refer a Child</a>
+      <a href="#contact-la" class="nav-cta">Make an Enquiry</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="la-hero">
+  <div class="wrap">
+    <div class="la-hero-inner">
+      <div class="la-eyebrow">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        For Local Authorities &amp; Commissioning Teams
+      </div>
+      <h1>A placement partner you can rely on — for every child, every time</h1>
+      <p>Epiphany Foster Care provides fast, high-quality foster placements across the East Midlands. We specialise in culturally affirming care, UASC, and complex needs — the placements that require more than a standard match.</p>
+      <div class="hero-ctas">
+        <a href="mailto:referrals@epiphanyfostercare.org.uk" class="btn-gold">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email a Referral
+        </a>
+        <a href="tel:08001234567" class="btn-outline-white">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.1 1.22 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.46-.46a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          0800 123 4567 — 24/7
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <div class="wrap">
+    <div class="trust-items">
+      <div class="trust-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Ofsted Registered IFA
+      </div>
+      <div class="trust-divider"></div>
+      <div class="trust-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Emergency response within 4 hours
+      </div>
+      <div class="trust-divider"></div>
+      <div class="trust-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        UASC specialist team
+      </div>
+      <div class="trust-divider"></div>
+      <div class="trust-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        East Midlands based
+      </div>
+      <div class="trust-divider"></div>
+      <div class="trust-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/><path d="M1 1l22 22"/></svg>
+        24/7 out-of-hours support
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PLACEMENT TYPES -->
+<section class="la-section">
+  <div class="wrap">
+    <div class="section-label">Placement Types</div>
+    <h2 class="section-h2">We cover the full spectrum of fostering need</h2>
+    <p class="section-lead">From same-day emergency placements to long-term family homes — we match the right carer to every child, with cultural competency at the centre of every decision.</p>
+    <div class="placement-grid">
+
+      <div class="ptype-card" style="border-top-color:var(--coral)">
+        <div class="ptype-icon" style="background:#fef2f2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E85D4A" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="ptype-name">Emergency Fostering</div>
+        <div class="ptype-desc">Immediate placements at short notice, including evenings, weekends, and bank holidays. Our duty line is answered within the hour.</div>
+        <div class="ptype-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Response within 4 hours</div>
+      </div>
+
+      <div class="ptype-card" style="border-top-color:var(--gold)">
+        <div class="ptype-icon" style="background:#fffbeb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8A020" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <div class="ptype-name">Short-Term Fostering</div>
+        <div class="ptype-desc">Planned short-term placements while care proceedings are ongoing or while a permanent solution is established. Stability and continuity prioritised.</div>
+        <div class="ptype-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg> Weeks to months</div>
+      </div>
+
+      <div class="ptype-card" style="border-top-color:var(--purple)">
+        <div class="ptype-icon" style="background:#eef0fb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2C1A6B" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+        <div class="ptype-name">Long-Term Fostering</div>
+        <div class="ptype-desc">Permanent family placements for children who cannot return home. Careful, culturally informed matching with carers committed to the long term.</div>
+        <div class="ptype-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg> Years — often to adulthood</div>
+      </div>
+
+      <div class="ptype-card" style="border-top-color:var(--teal)">
+        <div class="ptype-icon" style="background:#f0fdf9"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2A9D8F" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M3 21a9 9 0 0118 0"/></svg></div>
+        <div class="ptype-name">UASC Placements</div>
+        <div class="ptype-desc">Our specialist team has deep experience with unaccompanied asylum seeking children. Culturally matched carers, trauma-informed support, legal process navigation.</div>
+        <div class="ptype-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Specialist provision</div>
+      </div>
+
+      <div class="ptype-card" style="border-top-color:#7c3aed">
+        <div class="ptype-icon" style="background:#f5f3ff"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg></div>
+        <div class="ptype-name">Therapeutic Fostering</div>
+        <div class="ptype-desc">Specialist placements for children with complex trauma, attachment difficulties, or challenging behaviour. Supported by our in-house therapeutic advisor, Dr. James Okafor.</div>
+        <div class="ptype-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg> Assessed on need</div>
+      </div>
+
+      <div class="ptype-card" style="border-top-color:#0891b2">
+        <div class="ptype-icon" style="background:#f0f9ff"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <div class="ptype-name">Sibling Groups</div>
+        <div class="ptype-desc">Keeping siblings together is a priority we take seriously. We proactively recruit and train carers with the capacity and skills to provide sibling placements.</div>
+        <div class="ptype-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Groups of 2–4</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- UASC HIGHLIGHT -->
+<section class="la-section alt">
+  <div class="wrap">
+    <div class="uasc-banner">
+      <div>
+        <div class="section-label" style="color:rgba(255,255,255,.65)">UASC Specialist Provision</div>
+        <h3>Expertise where it matters most</h3>
+        <p>We are one of the few IFAs in the East Midlands with a dedicated UASC team. Our carers receive specialist UASC training, and our social workers have experience navigating asylum processes, NRPF considerations, and trauma-informed support for young people who have often faced extraordinary adversity.</p>
+        <div class="uasc-stats">
+          <div class="uasc-stat">
+            <div class="uasc-stat-n">24hr</div>
+            <div class="uasc-stat-l">Referral response</div>
+          </div>
+          <div class="uasc-stat">
+            <div class="uasc-stat-n">100%</div>
+            <div class="uasc-stat-l">Culturally matched</div>
+          </div>
+          <div class="uasc-stat">
+            <div class="uasc-stat-n">16+</div>
+            <div class="uasc-stat-l">Languages supported</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <a href="mailto:referrals@epiphanyfostercare.org.uk?subject=UASC Referral Enquiry" class="btn-gold" style="white-space:nowrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6"/></svg>
+          UASC Referral Enquiry
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="la-section">
+  <div class="wrap">
+    <div class="section-label">Referral Process</div>
+    <h2 class="section-h2">Simple, fast, responsive</h2>
+    <p class="section-lead">We have designed our referral process to be as straightforward as possible. You get a named point of contact, clear timelines, and honest communication at every stage.</p>
+    <div class="process-steps">
+      <div class="pstep">
+        <div class="pstep-num">1</div>
+        <div class="pstep-title">Contact Us</div>
+        <div class="pstep-desc">Call 0800 123 4567 or email referrals@epiphanyfostercare.org.uk with the child's age, type of placement needed, and any specific requirements.</div>
+      </div>
+      <div class="pstep">
+        <div class="pstep-num">2</div>
+        <div class="pstep-title">Initial Match</div>
+        <div class="pstep-desc">We review our approved carer pool and identify suitable matches, taking into account ethnicity, religion, language, and the child's specific needs.</div>
+      </div>
+      <div class="pstep">
+        <div class="pstep-num">3</div>
+        <div class="pstep-title">Carer Profile</div>
+        <div class="pstep-desc">We provide a full carer profile within agreed timescales — including household details, skills, experience, and why we believe they are the right match.</div>
+      </div>
+      <div class="pstep">
+        <div class="pstep-num">4</div>
+        <div class="pstep-title">Placement &amp; Support</div>
+        <div class="pstep-desc">Once agreed, placement is arranged promptly. Your named SSW remains your point of contact throughout, attending all reviews and staying in close contact.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUALITY ASSURANCE -->
+<section class="la-section alt">
+  <div class="wrap">
+    <div class="two-col">
+      <div>
+        <div class="section-label">Quality Assurance</div>
+        <h2 class="section-h2">You can trust the quality of every placement</h2>
+        <p class="section-lead">Every carer we approve goes through a rigorous assessment process. We do not compromise on quality to fill a vacancy.</p>
+        <div class="quality-grid">
+          <div class="q-item">
+            <div class="q-icon" style="background:#eef0fb"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2C1A6B" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div><div class="q-title">Ofsted Registered</div><div class="q-desc">Regulated under the Fostering Services (England) Regulations 2011.</div></div>
+          </div>
+          <div class="q-item">
+            <div class="q-icon" style="background:#f0fdf9"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A9D8F" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+            <div><div class="q-title">Enhanced DBS All Carers</div><div class="q-desc">All approved carers and adult household members hold enhanced DBS certificates.</div></div>
+          </div>
+          <div class="q-item">
+            <div class="q-icon" style="background:#fef2f2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E85D4A" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+            <div><div class="q-title">Form F Assessed</div><div class="q-desc">Every carer completes a full Form F assessment before appearing before our independent fostering panel.</div></div>
+          </div>
+          <div class="q-item">
+            <div class="q-icon" style="background:#fffbeb"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8A020" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
+            <div><div class="q-title">Ongoing Training</div><div class="q-desc">All carers complete a minimum of 40 training hours annually across safeguarding, cultural competence, and therapeutic parenting.</div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="la-testimonial">
+          <blockquote>
+            "Epiphany were able to identify a culturally appropriate placement for a child in our care within 48 hours — something we had struggled to achieve for several weeks. The cultural matching was thorough and the transition was the smoothest we have seen. Their team stayed closely involved throughout the placement review and felt like a genuine partner, not just a supplier."
+          </blockquote>
+          <div class="bq-author">Rachel Okonkwo</div>
+          <div class="bq-role">Commissioning Social Worker · East Midlands Local Authority</div>
+        </div>
+        <div style="margin-top:1.5rem;background:var(--cream);border-radius:16px;padding:1.5rem">
+          <div style="font-weight:700;font-size:.9rem;color:var(--purple-d);margin-bottom:.85rem">Our commitments to you</div>
+          <div style="display:flex;flex-direction:column;gap:.6rem">
+            <div style="display:flex;align-items:center;gap:.6rem;font-size:.85rem;color:#374151"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2A9D8F" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Named SSW for every placement</div>
+            <div style="display:flex;align-items:center;gap:.6rem;font-size:.85rem;color:#374151"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2A9D8F" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Minimum 6-weekly statutory visits</div>
+            <div style="display:flex;align-items:center;gap:.6rem;font-size:.85rem;color:#374151"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2A9D8F" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 24/7 duty line — always answered</div>
+            <div style="display:flex;align-items:center;gap:.6rem;font-size:.85rem;color:#374151"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2A9D8F" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Attendance at all LAC reviews</div>
+            <div style="display:flex;align-items:center;gap:.6rem;font-size:.85rem;color:#374151"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2A9D8F" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Placement disruption support &amp; management</div>
+            <div style="display:flex;align-items:center;gap:.6rem;font-size:.85rem;color:#374151"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2A9D8F" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Cultural competence across 16+ languages</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="la-section" id="contact-la">
+  <div class="wrap">
+    <div class="section-label">Make a Referral or Enquiry</div>
+    <h2 class="section-h2">Talk to our team today</h2>
+    <p class="section-lead" style="margin-bottom:2.5rem">For urgent placement needs call us directly. For planned referrals or general commissioning enquiries, use the form below and we will respond within two hours during office hours.</p>
+    <div class="contact-box">
+      <div>
+        <div style="margin-bottom:1.75rem">
+          <div class="cb-label">Referrals (24/7)</div>
+          <div class="cb-val"><a href="tel:08001234567" class="cb-link">0800 123 4567</a></div>
+          <div class="cb-sub">Free to call · Always answered</div>
+        </div>
+        <div style="margin-bottom:1.75rem">
+          <div class="cb-label">Referrals Email</div>
+          <div class="cb-val"><a href="mailto:referrals@epiphanyfostercare.org.uk" class="cb-link">referrals@epiphanyfostercare.org.uk</a></div>
+          <div class="cb-sub">Response within 2 hours (office hours)</div>
+        </div>
+        <div style="margin-bottom:1.75rem">
+          <div class="cb-label">Lead Contact</div>
+          <div class="cb-val">Marcus Thompson</div>
+          <div class="cb-sub">Senior Supervising Social Worker · UASC Lead</div>
+        </div>
+        <div>
+          <div class="cb-label">Office Address</div>
+          <div class="cb-val">New Walk, Leicester, LE1 7EA</div>
+          <div class="cb-sub">East Midlands · Spot purchase &amp; framework referrals welcome</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.85rem;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:1.1rem">Send us a referral or enquiry</div>
+        <form class="cb-form" id="la-form">
+          <input type="text" class="inp" placeholder="Your name" required>
+          <input type="text" class="inp" placeholder="Local Authority / Organisation" required>
+          <input type="email" class="inp" placeholder="Email address" required>
+          <input type="tel" class="inp" placeholder="Direct phone number">
+          <select class="inp" style="color:rgba(255,255,255,.6)">
+            <option value="" disabled selected>Type of placement needed</option>
+            <option style="color:#000">Emergency</option>
+            <option style="color:#000">Short-term</option>
+            <option style="color:#000">Long-term</option>
+            <option style="color:#000">UASC</option>
+            <option style="color:#000">Therapeutic</option>
+            <option style="color:#000">Sibling group</option>
+            <option style="color:#000">General commissioning enquiry</option>
+          </select>
+          <textarea class="inp" placeholder="Brief details (child's age, cultural background, any specific requirements — no identifying information at this stage)"></textarea>
+          <button type="submit" class="cb-btn">Send Enquiry</button>
+          <div id="la-ok" style="display:none;background:rgba(42,157,143,.2);border:1px solid rgba(42,157,143,.4);color:#6ee7b7;padding:.75rem;border-radius:9px;font-size:.84rem;text-align:center;margin-top:.75rem">
+            Thank you — we will be in touch within 2 hours.
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER (minimal) -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="index.html" class="logo">
+          <div class="logo-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5Z" fill="#2C1A6B"/></svg></div>
+          <div><div class="logo-name">Epiphany Foster Care</div><div class="logo-sub">Independent Fostering Agency</div></div>
+        </a>
+        <p>Based in Leicester, Leicestershire. Registered with Ofsted. Providing specialist, culturally affirming foster care across the East Midlands.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Placement Types</h4>
+        <ul>
+          <li><a href="#">Emergency Fostering</a></li>
+          <li><a href="#">Short-Term Fostering</a></li>
+          <li><a href="#">Long-Term Fostering</a></li>
+          <li><a href="#">UASC Placements</a></li>
+          <li><a href="#">Therapeutic Fostering</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Useful Links</h4>
+        <ul>
+          <li><a href="index.html">Main Website</a></li>
+          <li><a href="team.html">Meet the Team</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="login.html">Staff Login</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:08001234567">0800 123 4567</a></li>
+          <li><a href="mailto:referrals@epiphanyfostercare.org.uk">referrals@epiphanyfostercare.org.uk</a></li>
+          <li><a href="contact.html">Online enquiry</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <p class="foot-legal">&copy; 2025 Epiphany Foster Care Ltd. Registered in England &amp; Wales. Ofsted Registered. All rights reserved. <a href="privacy.html" style="color:inherit;text-decoration:underline">Privacy Policy</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.getElementById('la-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  document.getElementById('la-ok').style.display = 'block';
+  this.querySelectorAll('input,textarea,select,button').forEach(el => el.disabled = true);
+});
+// Burger menu
+document.getElementById('burger')?.addEventListener('click', function() {
+  document.getElementById('nav').classList.toggle('open');
+});
+// Custom cursor
+(function(){
+  const c=document.getElementById('cursor'),d=document.getElementById('cursor-dot');
+  if(!c||!window.matchMedia('(hover:hover)').matches)return;
+  let mx=0,my=0,cx=0,cy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function tick(){cx+=(mx-cx)*.12;cy+=(my-cy)*.12;c.style.left=cx+'px';c.style.top=cy+'px';d.style.left=mx+'px';d.style.top=my+'px';requestAnimationFrame(tick);})();
+  document.querySelectorAll('a,button,[role=button]').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('cursor-link'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('cursor-link'));
+  });
+})();
+</script>
+</body>
+</html>

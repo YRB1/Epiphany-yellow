@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Staff Dashboard — Epiphany Foster Care</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --purple:#78350F; --purple-d:#431407; --gold:#F59E0B;
+  --teal:#0F766E; --coral:#E85D4A; --cream:#FFFBEB; --bg:#F4F3F8;
+}
+#cursor{position:fixed;pointer-events:none;z-index:100000;width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(245,158,11,.65);transform:translate(-50%,-50%);transition:width .25s,height .25s,border-color .25s,background .25s;will-change:left,top;mix-blend-mode:difference}
+#cursor-dot{position:fixed;pointer-events:none;z-index:100001;width:5px;height:5px;border-radius:50%;background:var(--gold);transform:translate(-50%,-50%);will-change:left,top}
+body.cursor-link #cursor{width:52px;height:52px;background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.9)}
+@media(hover:none){#cursor,#cursor-dot{display:none}body{cursor:auto}}
+@media(hover:hover){body{cursor:none}a,button,[role=button]{cursor:none}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;color:#1f2937;background:var(--bg)}
+a{color:inherit}
+.serif{font-family:'Playfair Display',serif}
+
+/* ── LAYOUT ─────────────────────────────── */
+.app{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:256px;background:var(--purple-d);color:#fff;position:fixed;top:0;bottom:0;left:0;
+  display:flex;flex-direction:column;z-index:40;transition:transform .25s}
+.sb-brand{display:flex;align-items:center;gap:.7rem;padding:1.3rem 1.4rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-brand .star{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center}
+.sb-brand .bn{font-weight:700;font-size:.92rem;line-height:1.15}
+.sb-brand .bs{font-size:.64rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px}
+.sb-nav{flex:1;padding:1rem .8rem;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:.8rem;padding:.7rem .85rem;border-radius:10px;
+  cursor:pointer;color:rgba(255,255,255,.7);font-weight:500;font-size:.9rem;margin-bottom:.2rem;
+  transition:.18s;position:relative}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-item.active{background:linear-gradient(90deg,rgba(245,158,11,.22),rgba(245,158,11,.05));color:#fff}
+.nav-item.active::before{content:"";position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:3px;background:var(--gold)}
+.nav-item svg{width:18px;height:18px;flex:none}
+.nav-badge{margin-left:auto;background:var(--coral);color:#fff;font-size:.68rem;font-weight:700;
+  min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 .35rem}
+.sb-user{padding:1rem;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:.7rem}
+.sb-user .av{width:38px;height:38px;border-radius:50%;background:var(--gold);color:var(--purple-d);
+  display:flex;align-items:center;justify-content:center;font-weight:700;overflow:hidden;flex:none}
+.sb-user .av img{width:100%;height:100%;object-fit:cover}
+.sb-user .un{font-weight:600;font-size:.82rem;line-height:1.2}
+.sb-user .ur{font-size:.68rem;color:rgba(255,255,255,.5)}
+.sb-user .logout{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.55);cursor:pointer;padding:.3rem}
+.sb-user .logout:hover{color:var(--coral)}
+
+/* Main */
+.main{flex:1;margin-left:256px;display:flex;flex-direction:column;min-width:0}
+.topbar{height:64px;background:#fff;border-bottom:1px solid #e9e7f0;position:sticky;top:0;z-index:30;
+  display:flex;align-items:center;padding:0 1.75rem;gap:1rem}
+.topbar .hamb{display:none;background:none;border:none;cursor:pointer}
+.topbar h1{font-size:1.15rem;font-weight:700;color:var(--purple-d)}
+.topbar .right{margin-left:auto;display:flex;align-items:center;gap:1.1rem}
+.bell{position:relative;background:none;border:none;cursor:pointer;color:#6b7280;padding:.3rem}
+.bell:hover{color:var(--purple)}
+.bell .dot{position:absolute;top:-2px;right:-2px;background:var(--coral);color:#fff;font-size:.6rem;
+  font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 .25rem}
+.chip-user{display:flex;align-items:center;gap:.55rem;font-size:.85rem;font-weight:600;color:#374151}
+.chip-user .av{width:30px;height:30px;border-radius:50%;background:var(--purple);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:.78rem;overflow:hidden}
+.chip-user .av img{width:100%;height:100%;object-fit:cover}
+.topdate{font-size:.8rem;color:#9ca3af}
+
+.bell-dd{position:absolute;top:54px;right:1.5rem;width:300px;background:#fff;border:1px solid #e9e7f0;
+  border-radius:14px;box-shadow:0 18px 44px rgba(26,15,64,.18);z-index:50;overflow:hidden;display:none}
+.bell-dd.show{display:block}
+.bell-dd .bh{padding:.8rem 1rem;font-weight:700;font-size:.85rem;border-bottom:1px solid #f0eef6;color:var(--purple-d)}
+.bell-dd .bi{padding:.7rem 1rem;border-bottom:1px solid #f5f4fa;font-size:.82rem;cursor:pointer}
+.bell-dd .bi:hover{background:var(--cream)}
+.bell-dd .bi small{color:#9ca3af}
+.bell-dd .empty{padding:1.2rem;text-align:center;color:#9ca3af;font-size:.82rem}
+
+.content{padding:28px;flex:1}
+.panel{display:none}
+.panel.active{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Cards & shared */
+.card{background:#fff;border:1px solid #ece9f4;border-radius:16px;box-shadow:0 2px 10px rgba(26,15,64,.04)}
+.section-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.section-h h2{font-size:1.05rem;font-weight:700;color:var(--purple-d)}
+.link{color:var(--purple);font-weight:600;font-size:.82rem;cursor:pointer;text-decoration:none}
+.link:hover{text-decoration:underline}
+.grid{display:grid;gap:1.1rem}
+
+.badge{display:inline-flex;align-items:center;padding:.22rem .6rem;border-radius:30px;font-size:.7rem;font-weight:700;color:#fff}
+.tag{display:inline-flex;align-items:center;padding:.2rem .55rem;border-radius:7px;font-size:.68rem;font-weight:600;color:#fff;margin:.12rem}
+.status{display:inline-flex;align-items:center;gap:.35rem;padding:.22rem .6rem;border-radius:30px;font-size:.7rem;font-weight:700}
+.status::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.st-new{background:#fef3c7;color:#b45309}
+.st-contacted{background:#dbeafe;color:#1d4ed8}
+.st-in_progress{background:#e0e7ff;color:#4338ca}
+.st-resolved{background:#dcfce7;color:#15803d}
+
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.6rem 1rem;border-radius:10px;border:none;
+  cursor:pointer;font-family:inherit;font-weight:600;font-size:.85rem;transition:.18s}
+.btn-primary{background:var(--gold);color:#1f1300;box-shadow:0 4px 14px rgba(245,158,11,.3)}
+.btn-primary:hover{background:#D97706}
+.btn-purple{background:var(--purple);color:#fff}
+.btn-purple:hover{background:#3a2585}
+.btn-ghost{background:#fff;border:1.5px solid #e5e7eb;color:#374151}
+.btn-ghost:hover{border-color:var(--purple);color:var(--purple)}
+.btn-sm{padding:.4rem .7rem;font-size:.78rem}
+
+input,select,textarea{font-family:inherit;font-size:.88rem}
+.inp{width:100%;padding:.6rem .8rem;border:1.5px solid #e5e7eb;border-radius:10px;background:#fff;transition:.18s}
+.inp:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(120,53,15,.1)}
+
+/* Stat cards */
+.stats{grid-template-columns:repeat(4,1fr)}
+.stat{padding:1.2rem 1.3rem}
+.stat .lbl{font-size:.76rem;color:#8b8a96;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.stat .num{font-size:2rem;font-weight:700;margin-top:.3rem;color:var(--purple-d);font-family:'Playfair Display',serif}
+.stat .ic{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:.7rem;color:#fff}
+
+/* Welcome card */
+.welcome{background:linear-gradient(120deg,var(--purple-d),var(--purple));color:#fff;padding:1.6rem 1.8rem;
+  border-radius:18px;margin-bottom:1.4rem;position:relative;overflow:hidden}
+.welcome::after{content:"";position:absolute;right:-40px;top:-40px;width:200px;height:200px;
+  background:radial-gradient(circle,rgba(245,158,11,.25),transparent 70%)}
+.welcome h2{font-size:1.7rem;position:relative;z-index:1}
+.welcome p{color:rgba(255,255,255,.7);margin-top:.3rem;position:relative;z-index:1}
+
+/* Table */
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{text-align:left;padding:.7rem .9rem;color:#8b8a96;font-weight:600;font-size:.72rem;
+  text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #f0eef6}
+td{padding:.75rem .9rem;border-bottom:1px solid #f5f4fa}
+tr.clickable{cursor:pointer}
+tr.clickable:hover{background:var(--cream)}
+
+/* Avatars */
+.av-c{width:30px;height:30px;border-radius:50%;background:var(--purple);color:#fff;display:inline-flex;
+  align-items:center;justify-content:center;font-size:.72rem;font-weight:700;overflow:hidden;flex:none}
+.av-c img{width:100%;height:100%;object-fit:cover}
+.av-stack{display:flex}
+.av-stack .av-c{border:2px solid #fff;margin-left:-8px}
+.av-stack .av-c:first-child{margin-left:0}
+
+/* Chips/filters */
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.9rem}
+.chip{padding:.4rem .85rem;border-radius:30px;border:1.5px solid #e5e7eb;background:#fff;cursor:pointer;
+  font-size:.8rem;font-weight:600;color:#6b7280;transition:.15s}
+.chip:hover{border-color:var(--purple)}
+.chip.on{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+/* Drawer */
+.overlay{position:fixed;inset:0;background:rgba(26,15,64,.4);z-index:60;opacity:0;pointer-events:none;transition:.25s}
+.overlay.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:440px;max-width:92vw;background:#fff;z-index:70;
+  transform:translateX(100%);transition:transform .3s;overflow-y:auto;box-shadow:-12px 0 40px rgba(26,15,64,.2)}
+.drawer.show{transform:none}
+.drawer-h{padding:1.3rem 1.5rem;border-bottom:1px solid #f0eef6;display:flex;align-items:flex-start;justify-content:space-between}
+.drawer-b{padding:1.3rem 1.5rem}
+.close-x{background:none;border:none;cursor:pointer;color:#9ca3af;padding:.3rem}
+.close-x:hover{color:var(--coral)}
+.detail-row{display:flex;justify-content:space-between;padding:.55rem 0;border-bottom:1px solid #f5f4fa;font-size:.85rem}
+.detail-row .k{color:#8b8a96}
+.detail-row .v{font-weight:600;text-align:right}
+
+/* Modal */
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:80;padding:1rem}
+.modal.show{display:flex}
+.modal-bg{position:absolute;inset:0;background:rgba(26,15,64,.45)}
+.modal-box{position:relative;background:#fff;border-radius:18px;width:540px;max-width:100%;max-height:90vh;
+  overflow-y:auto;box-shadow:0 24px 60px rgba(26,15,64,.3);animation:pop .25s ease}
+@keyframes pop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+.modal-h{padding:1.3rem 1.5rem;border-bottom:1px solid #f0eef6;display:flex;align-items:center;justify-content:space-between}
+.modal-h h3{font-size:1.15rem;color:var(--purple-d)}
+.modal-b{padding:1.4rem 1.5rem}
+.modal-f{padding:1rem 1.5rem;border-top:1px solid #f0eef6;display:flex;justify-content:flex-end;gap:.6rem}
+.fl{margin-bottom:1rem}
+.fl label{display:block;font-size:.78rem;font-weight:600;color:#374151;margin-bottom:.35rem}
+.notes-list{margin-top:.8rem}
+.note{background:var(--cream);border-radius:10px;padding:.65rem .8rem;margin-bottom:.5rem;font-size:.82rem}
+.note small{display:block;color:#9ca3af;margin-top:.3rem;font-size:.7rem}
+
+/* Calendar */
+.cal-head{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+.cal-head h2{font-size:1.2rem;color:var(--purple-d);min-width:180px;text-align:center}
+.cal-nav{width:36px;height:36px;border-radius:10px;border:1.5px solid #e5e7eb;background:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;color:var(--purple)}
+.cal-nav:hover{background:var(--purple);color:#fff}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-dow{text-align:center;font-size:.72rem;font-weight:700;color:#8b8a96;text-transform:uppercase;padding:.4rem 0}
+.cal-cell{min-height:96px;background:#fff;border:1px solid #f0eef6;border-radius:11px;padding:.45rem;cursor:pointer;transition:.15s}
+.cal-cell:hover{border-color:var(--purple);background:var(--cream)}
+.cal-cell.empty{background:transparent;border:none;cursor:default}
+.cal-cell.today{border-color:var(--gold);box-shadow:0 0 0 2px rgba(245,158,11,.25)}
+.cal-cell .dn{font-size:.78rem;font-weight:600;color:#374151}
+.cal-ev{font-size:.66rem;color:#fff;padding:.12rem .35rem;border-radius:5px;margin-top:.2rem;overflow:hidden;
+  white-space:nowrap;text-overflow:ellipsis}
+.cal-legend{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1rem;font-size:.78rem;color:#6b7280}
+.cal-legend span{display:inline-flex;align-items:center;gap:.4rem}
+.cal-legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
+
+/* Carer/staff cards */
+.cards3{grid-template-columns:repeat(3,1fr)}
+.cards2{grid-template-columns:repeat(2,1fr)}
+.pcard{padding:1.2rem;display:flex;flex-direction:column}
+.pcard .ph{display:flex;gap:.9rem;align-items:center;margin-bottom:.8rem}
+.pcard .photo{width:54px;height:54px;border-radius:50%;object-fit:cover;background:var(--purple);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.2rem;flex:none}
+.pcard h3{font-size:.98rem;color:var(--purple-d)}
+.pcard .sub{font-size:.78rem;color:#8b8a96}
+.meta-row{display:flex;align-items:center;gap:.45rem;font-size:.8rem;color:#6b7280;margin-top:.4rem}
+.meta-row svg{width:14px;height:14px;flex:none;color:#9ca3af}
+
+/* Featured staff */
+.featured{padding:1.6rem;display:flex;gap:1.5rem;align-items:center;
+  border:2px solid var(--gold);background:linear-gradient(110deg,#fff,#fffbf3)}
+.featured .photo{width:96px;height:96px;border-radius:50%;object-fit:cover;flex:none;border:3px solid var(--gold)}
+.featured h2{font-size:1.5rem;color:var(--purple-d)}
+.ceo-badge{background:var(--gold);color:#1f1300;font-size:.66rem;font-weight:700;padding:.25rem .65rem;
+  border-radius:30px;text-transform:uppercase;letter-spacing:.6px}
+
+.empty-state{padding:3rem;text-align:center;color:#9ca3af}
+.empty-state svg{width:48px;height:48px;margin-bottom:.8rem;opacity:.5}
+
+.tabs{display:flex;gap:.3rem;border-bottom:1px solid #f0eef6;margin-bottom:1rem}
+.tab{padding:.6rem .9rem;cursor:pointer;font-size:.85rem;font-weight:600;color:#8b8a96;border-bottom:2px solid transparent}
+.tab.on{color:var(--purple);border-color:var(--gold)}
+
+@media(max-width:980px){.stats,.cards3,.cards2{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:780px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:none}
+  .main{margin-left:0}
+  .topbar .hamb{display:block}
+  .stats,.cards3,.cards2,.cal-grid{grid-template-columns:repeat(1,1fr)}
+  .cal-grid{grid-template-columns:repeat(7,1fr)}
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-dot"></div>
+<div class="app">
+
+  <!-- ── SIDEBAR ─────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="star"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5Z" fill="#F59E0B"/></svg></div>
+      <div><div class="bn">Epiphany</div><div class="bs">Staff Portal</div></div>
+    </div>
+    <nav class="sb-nav" id="nav"></nav>
+    <div class="sb-user" id="sbUser"></div>
+  </aside>
+
+  <!-- ── MAIN ────────────────────────── -->
+  <div class="main">
+    <header class="topbar">
+      <button class="hamb" id="hamb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#78350F" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <h1 id="panelTitle">Overview</h1>
+      <div class="right">
+        <div style="position:relative">
+          <button class="bell" id="bell"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span class="dot" id="bellDot">0</span></button>
+        </div>
+        <div class="chip-user" id="topUser"></div>
+        <span class="topdate" id="topDate"></span>
+      </div>
+    </header>
+    <div class="bell-dd" id="bellDd"></div>
+
+    <main class="content">
+      <section class="panel active" id="panel-overview"></section>
+      <section class="panel" id="panel-enquiries"></section>
+      <section class="panel" id="panel-calendar"></section>
+      <section class="panel" id="panel-meetings"></section>
+      <section class="panel" id="panel-carers"></section>
+      <section class="panel" id="panel-staff"></section>
+      <section class="panel" id="panel-profile"></section>
+    </main>
+  </div>
+</div>
+
+<!-- Drawer (enquiry detail) -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer"></aside>
+
+<!-- Generic modal -->
+<div class="modal" id="modal">
+  <div class="modal-bg" data-close></div>
+  <div class="modal-box" id="modalBox"></div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════
+   STAFF DATA
+   ════════════════════════════════════════════════════ */
+const STAFF = [
+  { id:'rose-katana', name:'Rose Katana', firstName:'Rose', role:'Chief Executive Officer', dept:'Leadership', email:'rose.katana@epiphanyfostercare.org.uk', phone:'07700 000 001', password:'Rose2025!', tags:[{label:'CEO',color:'#F59E0B'},{label:'Responsible Individual',color:'#78350F'}], access:'admin', photo:'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80&auto=format&fit=crop', bio:'Rose founded Epiphany Foster Care with over 20 years of experience in social work, child protection, and agency leadership. She leads the organisation with passion, purpose, and an unwavering commitment to every child in our care.', joined:'2012-03-01', activeCases:0, accentColor:'#F59E0B' },
+  { id:'amara-osei', name:'Dr. Amara Osei-Bonsu', firstName:'Amara', role:'Executive Director', dept:'Leadership', email:'amara.osei@epiphanyfostercare.org.uk', phone:'07700 000 002', password:'Amara2025!', tags:[{label:'Director',color:'#78350F'},{label:'PhD Social Work',color:'#0F766E'}], access:'manager', photo:'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&q=80&auto=format&fit=crop', bio:'PhD Social Work · CQSW · 18 years experience. Founded the clinical framework that underpins all Epiphany practice.', joined:'2012-06-01', activeCases:0, accentColor:'#78350F' },
+  { id:'sarah-adeyemi', name:'Sarah Adeyemi-Clarke', firstName:'Sarah', role:'Registered Manager', dept:'Management', email:'sarah.adeyemi@epiphanyfostercare.org.uk', phone:'07700 000 003', password:'Sarah2025!', tags:[{label:'Registered Manager',color:'#E85D4A'},{label:'IFA Management',color:'#78350F'}], access:'manager', photo:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80&auto=format&fit=crop', bio:'MA Social Work · DipSW · 14 years in IFA management. Responsible for operational excellence and regulatory compliance.', joined:'2013-01-15', activeCases:0, accentColor:'#3d2a8a' },
+  { id:'marcus-thompson', name:'Marcus Thompson', firstName:'Marcus', role:'Senior Supervising Social Worker', dept:'Social Work', email:'marcus.thompson@epiphanyfostercare.org.uk', phone:'07700 000 004', password:'Marcus2025!', tags:[{label:'Senior SSW',color:'#0F766E'},{label:'UASC Specialist',color:'#F59E0B'}], access:'social_worker', photo:'https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=400&q=80&auto=format&fit=crop', bio:'BA Social Work · UASC Specialist · 11 years. Our lead practitioner for UASC placements.', joined:'2014-03-10', activeCases:8, accentColor:'#0F766E' },
+  { id:'priya-sharma', name:'Priya Sharma', firstName:'Priya', role:'Supervising Social Worker', dept:'Social Work', email:'priya.sharma@epiphanyfostercare.org.uk', phone:'07700 000 005', password:'Priya2025!', tags:[{label:'SSW',color:'#0F766E'},{label:'Therapeutic Parenting Trainer',color:'#F59E0B'}], access:'social_worker', photo:'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&q=80&auto=format&fit=crop', bio:'MSc Social Work · Therapeutic Parenting Trainer. Specialist in building long-term carer relationships.', joined:'2015-09-01', activeCases:6, accentColor:'#E85D4A' },
+  { id:'james-okafor', name:'Dr. James Okafor', firstName:'James', role:'Therapeutic Advisor', dept:'Clinical', email:'james.okafor@epiphanyfostercare.org.uk', phone:'07700 000 006', password:'James2025!', tags:[{label:'DClinPsy',color:'#E85D4A'},{label:'EMDR',color:'#78350F'},{label:'Clinical',color:'#0F766E'}], access:'clinical', photo:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80&auto=format&fit=crop', bio:'DClinPsy · Trauma-Informed Practitioner · EMDR. Provides therapeutic consultation across all placements.', joined:'2016-02-14', activeCases:12, accentColor:'#E85D4A' },
+  { id:'fatima-alhassan', name:'Fatima Al-Hassan', firstName:'Fatima', role:'Recruitment & Training Lead', dept:'Recruitment', email:'fatima.alhassan@epiphanyfostercare.org.uk', phone:'07700 000 007', password:'Fatima2025!', tags:[{label:'CIPD',color:'#F59E0B'},{label:'Recruitment',color:'#78350F'},{label:'Training',color:'#0F766E'}], access:'recruitment', photo:'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80&auto=format&fit=crop', bio:'CIPD · NVQ Training & Development · 9 years. Leads carer recruitment pipeline and training programme.', joined:'2017-04-03', activeCases:0, accentColor:'#F59E0B' }
+];
+
+/* ── Auth gate ──────────────────────────── */
+const USER = JSON.parse(sessionStorage.getItem('efc_user') || 'null');
+if (!USER) { window.location.replace('login.html'); }
+
+/* ── Helpers ────────────────────────────── */
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const get = k => JSON.parse(localStorage.getItem(k) || '[]');
+const set = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+const staffById = id => STAFF.find(s=>s.id===id);
+function initials(name){ return name.split(/[\s&]+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+function fmtDate(iso){ if(!iso)return''; const d=new Date(iso); return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
+function fmtDay(iso){ const d=new Date(iso); return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
+function statusLabel(s){ return ({new:'New',contacted:'Contacted',in_progress:'In Progress',resolved:'Resolved'})[s]||s; }
+function interestLabel(i){ return ({become:'Become a Carer',carer:'Become a Carer',refer:'Refer a Child',info:'Request Info',social_worker:'Social Worker'})[i]||i; }
+function interestColor(i){ return ({become:'#0F766E',carer:'#0F766E',refer:'#E85D4A',info:'#78350F',social_worker:'#F59E0B'})[i]||'#6b7280'; }
+const EVENT_COLORS = { Meeting:'#78350F', Review:'#F59E0B', Training:'#0F766E', Personal:'#6b7280', Panel:'#E85D4A' };
+function avatar(staff,size){ size=size||30; const st='width:'+size+'px;height:'+size+'px;font-size:'+(size*.4)+'px';
+  if(staff&&staff.photo) return '<span class="av-c" style="'+st+'"><img src="'+staff.photo+'" onerror="this.parentNode.textContent=\''+initials(staff.name)+'\'"></span>';
+  return '<span class="av-c" style="'+st+'">'+(staff?initials(staff.name):'?')+'</span>'; }
+
+/* ════════════════════════════════════════════════════
+   SEED DATA (first load only)
+   ════════════════════════════════════════════════════ */
+function nowOffset(days,h,m){ const d=new Date(); d.setDate(d.getDate()+days); if(h!=null)d.setHours(h,m||0,0,0); return d.toISOString(); }
+function monthDate(day,h,m){ const d=new Date(); d.setDate(day); if(h!=null)d.setHours(h,m||0,0,0); return d.toISOString(); }
+
+function seed(){
+  if (localStorage.getItem('efc_seeded')) return;
+
+  set('efc_enquiries', [
+    { id:'enq_1', timestamp:nowOffset(-1,10,15), first:'John & Mary', last:'Thompson', email:'jmthompson@example.com', phone:'07811 234 001', interest:'become', message:'We have a spare room and would love to learn about fostering teenagers.', org:'', child_age:'', urgency:'', status:'new', notes:[], assignedTo:null },
+    { id:'enq_2', timestamp:nowOffset(-4,14,30), first:'Rachel', last:'Okonkwo', email:'r.okonkwo@hackney.gov.uk', phone:'020 8356 0001', interest:'refer', message:'Referring a sibling group of two requiring an emergency placement.', org:'Hackney Council', child_age:'7 and 9', urgency:'high', status:'in_progress', notes:[{text:'Initial call held, gathering placement details.', author:'Marcus Thompson', ts:nowOffset(-3,9,0)}], assignedTo:'marcus-thompson' },
+    { id:'enq_3', timestamp:nowOffset(-6,11,0), first:'Ahmed', last:'Ibrahim', email:'ahmed.ibrahim@example.com', phone:'07811 234 003', interest:'become', message:'Interested in becoming a foster carer, especially for UASC.', org:'', child_age:'', urgency:'', status:'contacted', notes:[{text:'Sent welcome pack and booked info evening.', author:'Fatima Al-Hassan', ts:nowOffset(-5,15,0)}], assignedTo:'fatima-alhassan' },
+    { id:'enq_4', timestamp:nowOffset(-2,16,45), first:'Claire', last:'Stevens', email:'claire.stevens@example.com', phone:'07811 234 004', interest:'info', message:'Could you send information about the assessment process?', org:'', child_age:'', urgency:'', status:'new', notes:[], assignedTo:null },
+    { id:'enq_5', timestamp:nowOffset(-20,13,20), first:'Fatimah', last:'Osei', email:'fatimah.osei@example.com', phone:'07811 234 005', interest:'become', message:'Approved and matched — thank you for everything!', org:'', child_age:'', urgency:'', status:'resolved', notes:[{text:'Approved at panel. Now an active carer.', author:'Sarah Adeyemi-Clarke', ts:nowOffset(-10,12,0)}], assignedTo:null },
+    { id:'enq_6', timestamp:nowOffset(0,8,30), first:'Dr.', last:'Patel', email:'s.patel@lambeth.gov.uk', phone:'020 7926 0001', interest:'refer', message:'Urgent UASC placement required for a 15-year-old arriving today.', org:'Lambeth Council', child_age:'15', urgency:'urgent', status:'new', notes:[], assignedTo:null }
+  ]);
+
+  set('efc_meetings', [
+    { id:'mtg_1', title:'Weekly Team Meeting', type:'Team Meeting', date:nowOffset(1,9,30), duration:'1hr', attendees:['rose-katana','amara-osei','sarah-adeyemi','marcus-thompson','priya-sharma'], location:'Boardroom / Zoom', notes:'Standing agenda: caseload review, new referrals, training updates, safeguarding round-up.' },
+    { id:'mtg_2', title:'Supervision — Marcus Thompson', type:'Supervision', date:nowOffset(3,14,0), duration:'1hr', attendees:['sarah-adeyemi','marcus-thompson'], location:'Office 2', notes:'Reflective supervision. Review UASC caseload and wellbeing.' },
+    { id:'mtg_3', title:'Fostering Panel', type:'Panel', date:nowOffset(5,10,0), duration:'2hr', attendees:['rose-katana','amara-osei','james-okafor','sarah-adeyemi'], location:'Panel Room', notes:'Two approvals scheduled. Mensah annual review and a new applicant recommendation.' },
+    { id:'mtg_4', title:'LAC Review — Child A', type:'LAC Review', date:nowOffset(-3,11,0), duration:'1.5hr', attendees:['marcus-thompson','james-okafor'], location:'Virtual (Teams)', notes:'Statutory review. Education and therapeutic progress positive.' },
+    { id:'mtg_5', title:'Therapeutic Parenting Training', type:'Training', date:nowOffset(-7,9,30), duration:'3hr', attendees:['priya-sharma','fatima-alhassan','james-okafor'], location:'Training Suite', notes:'Module 3 delivered to cohort of 8 carers. Strong engagement.' }
+  ]);
+
+  set('efc_events', [
+    { id:'ev_1', date:monthDate(3), title:'Team Meeting', type:'Meeting', time:'09:30', notes:'Weekly catch-up' },
+    { id:'ev_2', date:monthDate(8), title:'Fostering Panel', type:'Panel', time:'10:00', notes:'Two approvals' },
+    { id:'ev_3', date:monthDate(12), title:'LAC Review — Child A', type:'Review', time:'11:00', notes:'Statutory review' },
+    { id:'ev_4', date:monthDate(15), title:'Carer Training Day', type:'Training', time:'09:30', notes:'Therapeutic parenting' },
+    { id:'ev_5', date:monthDate(21), title:'Annual leave — Robert T.', type:'Personal', time:'All day', notes:'' },
+    { id:'ev_6', date:monthDate(25), title:'Supervision — Priya', type:'Meeting', time:'14:00', notes:'Monthly supervision' }
+  ]);
+
+  set('efc_carers', [
+    { id:'carer_1', name:'Joyce & David Mensah', approved:'2018-05-12', types:['Long-term','UASC'], ssw:'marcus-thompson', status:'active', nextReview:'2026-05-12', placements:[
+        {child:'A.M.', age:15, type:'UASC', start:'2024-09-01', end:null},
+        {child:'K.O.', age:13, type:'Long-term', start:'2023-02-10', end:null} ],
+      reviews:[{date:'2025-05-10', outcome:'Approved — continue', notes:'Excellent ongoing care, no concerns.'}],
+      cnotes:[{text:'Household stable, both placements thriving.', author:'Marcus Thompson', ts:nowOffset(-15,10,0)}],
+      household:'2 adults, no birth children at home', area:'Croydon, South London' },
+    { id:'carer_2', name:'Sandra Williams', approved:'2021-11-03', types:['Emergency','Short-term'], ssw:'priya-sharma', status:'active', nextReview:'2026-11-03', placements:[
+        {child:'T.B.', age:8, type:'Short-term', start:'2025-03-20', end:null} ],
+      reviews:[{date:'2025-10-30', outcome:'Approved — continue', notes:'Reliable emergency carer.'}],
+      cnotes:[], household:'1 adult, 1 birth child (age 16)', area:'Lewisham, South-East London' },
+    { id:'carer_3', name:'Peter & Grace Osei', approved:null, types:['Short-term'], ssw:'fatima-alhassan', status:'assessment', nextReview:null, placements:[],
+      reviews:[], cnotes:[{text:'Form F assessment in progress, stage 2.', author:'Fatima Al-Hassan', ts:nowOffset(-8,11,0)}],
+      household:'2 adults, 2 birth children', area:'Bromley, Kent border' },
+    { id:'carer_4', name:'Robert & Sue Thompson', approved:'2016-07-19', types:['Long-term'], ssw:'marcus-thompson', status:'on_leave', nextReview:'2026-07-19', placements:[],
+      reviews:[{date:'2025-07-15', outcome:'Approved — continue', notes:'Currently on a planned break.'}],
+      cnotes:[{text:'On agreed respite break, available from next quarter.', author:'Marcus Thompson', ts:nowOffset(-25,9,0)}],
+      household:'2 adults, 1 birth child (age 19)', area:'Sutton, Surrey' }
+  ]);
+
+  localStorage.setItem('efc_seeded','1');
+}
+seed();
+
+/* ════════════════════════════════════════════════════
+   NAV / SHELL
+   ════════════════════════════════════════════════════ */
+const ICONS = {
+  overview:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  enquiries:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/>',
+  calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+  meetings:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>',
+  carers:'<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z"/>',
+  staff:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>',
+  profile:'<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>'
+};
+const NAV = [
+  {id:'overview',label:'Overview'},
+  {id:'enquiries',label:'Enquiries',badge:true},
+  {id:'calendar',label:'Calendar'},
+  {id:'meetings',label:'Meetings'},
+  {id:'carers',label:'Foster Carers'},
+  {id:'staff',label:'Staff'},
+  {id:'profile',label:'My Profile'}
+];
+
+function buildNav(){
+  $('#nav').innerHTML = NAV.map(n =>
+    '<div class="nav-item" data-panel="'+n.id+'">'+
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICONS[n.id]+'</svg>'+
+    '<span>'+n.label+'</span>'+
+    (n.badge?'<span class="nav-badge" id="navBadge" style="display:none">0</span>':'')+
+    '</div>').join('');
+  $('#nav').querySelectorAll('.nav-item').forEach(el => el.addEventListener('click', ()=>navigate(el.dataset.panel)));
+
+  $('#sbUser').innerHTML =
+    avatar(USER,38) +
+    '<div><div class="un">'+esc(USER.firstName)+'</div><div class="ur">'+esc(USER.role.split(' ').slice(0,2).join(' '))+'</div></div>'+
+    '<button class="logout" id="logout" title="Log out"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>';
+  $('#logout').addEventListener('click', logout);
+
+  $('#topUser').innerHTML = avatar(USER,30)+'<span>'+esc(USER.name)+'</span>';
+  $('#topDate').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+function logout(){ sessionStorage.removeItem('efc_user'); window.location.href='login.html'; }
+
+const RENDERERS = {
+  overview:renderOverview, enquiries:renderEnquiries, calendar:renderCalendar,
+  meetings:renderMeetings, carers:renderCarers, staff:renderStaff, profile:renderProfile
+};
+function navigate(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.panel===id));
+  $('#panel-'+id).classList.add('active');
+  $('#panelTitle').textContent = NAV.find(n=>n.id===id).label;
+  RENDERERS[id]();
+  $('#sidebar').classList.remove('open');
+  $('#bellDd').classList.remove('show');
+}
+
+function refreshBadges(){
+  const newCount = get('efc_enquiries').filter(e=>e.status==='new').length;
+  const nb = $('#navBadge'); if(nb){ nb.textContent=newCount; nb.style.display = newCount?'flex':'none'; }
+  const bd = $('#bellDot'); bd.textContent=newCount; bd.style.display = newCount?'flex':'none';
+}
+
+/* ════════════════════════════════════════════════════
+   OVERVIEW
+   ════════════════════════════════════════════════════ */
+function greeting(){ const h=new Date().getHours(); return h<12?'Good morning':h<18?'Good afternoon':'Good evening'; }
+function thisWeekMeetings(){
+  const now=new Date(), wk=new Date(); wk.setDate(now.getDate()+7);
+  return get('efc_meetings').filter(m=>{const d=new Date(m.date);return d>=now&&d<=wk;});
+}
+function renderOverview(){
+  const enq=get('efc_enquiries'), carers=get('efc_carers'), meetings=get('efc_meetings');
+  const newEnq=enq.filter(e=>e.status==='new').length;
+  const activeCarers=carers.filter(c=>c.status==='active').length;
+  const upcoming=get('efc_meetings').filter(m=>new Date(m.date)>=new Date()).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const weekCount=thisWeekMeetings().length;
+
+  const stat=(lbl,num,color,svg)=>'<div class="card stat"><div class="ic" style="background:'+color+'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">'+svg+'</svg></div><div class="lbl">'+lbl+'</div><div class="num">'+num+'</div></div>';
+
+  let html =
+    '<div class="welcome"><h2 class="serif">'+greeting()+', '+esc(USER.firstName)+'</h2>'+
+    '<p>'+new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+' — '+esc(USER.role)+'</p>'+
+    '<div style="margin-top:.7rem;position:relative;z-index:1">'+USER.tags.map(t=>'<span class="tag" style="background:'+t.color+'">'+esc(t.label)+'</span>').join('')+'</div></div>';
+
+  html += '<div class="grid stats" style="margin-bottom:1.4rem">'+
+    stat('Total Enquiries',enq.length,'#78350F','<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/>')+
+    stat('New Enquiries',newEnq,'#E85D4A','<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>')+
+    stat('Active Carers',activeCarers,'#0F766E','<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z"/>')+
+    stat('Meetings This Week',weekCount,'#F59E0B','<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>')+
+    '</div>';
+
+  // Recent enquiries
+  const recent=enq.slice(0,5);
+  html += '<div class="grid cards2">';
+  html += '<div class="card" style="padding:1.2rem"><div class="section-h"><h2>Recent Enquiries</h2><a class="link" data-go="enquiries">View all →</a></div>'+
+    '<table><thead><tr><th>Name</th><th>Type</th><th>Date</th><th>Status</th></tr></thead><tbody>'+
+    recent.map(e=>'<tr><td>'+esc(e.first+' '+e.last)+'</td><td><span class="badge" style="background:'+interestColor(e.interest)+'">'+interestLabel(e.interest)+'</span></td><td>'+fmtDate(e.timestamp)+'</td><td><span class="status st-'+e.status+'">'+statusLabel(e.status)+'</span></td></tr>').join('')+
+    '</tbody></table></div>';
+
+  // Upcoming meetings
+  html += '<div class="card" style="padding:1.2rem"><div class="section-h"><h2>Upcoming Meetings</h2><a class="link" data-go="meetings">View all →</a></div>'+
+    (upcoming.length?upcoming.slice(0,3).map(m=>
+      '<div style="border:1px solid #f0eef6;border-radius:12px;padding:.85rem;margin-bottom:.7rem">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:.9rem">'+esc(m.title)+'</strong><span class="badge" style="background:'+EVENT_COLORS[mtgColor(m.type)]+'">'+esc(m.type)+'</span></div>'+
+      '<div style="font-size:.8rem;color:#6b7280;margin-top:.35rem">'+fmtDay(m.date)+' · '+new Date(m.date).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' · '+esc(m.duration)+'</div>'+
+      '<div class="av-stack" style="margin-top:.55rem">'+m.attendees.slice(0,4).map(id=>avatar(staffById(id),28)).join('')+(m.attendees.length>4?'<span class="av-c" style="width:28px;height:28px;background:#9ca3af">+'+(m.attendees.length-4)+'</span>':'')+'</div>'+
+      '</div>').join('') : '<div class="empty-state">No upcoming meetings.</div>')+
+    '</div>';
+  html += '</div>';
+
+  // Quick actions
+  html += '<div class="card" style="padding:1.2rem;margin-top:1.4rem"><div class="section-h"><h2>Quick Actions</h2></div>'+
+    '<div style="display:flex;gap:.7rem;flex-wrap:wrap">'+
+    '<button class="btn btn-primary" id="qaMeeting">+ New Meeting</button>'+
+    '<button class="btn btn-ghost" data-go="enquiries">View Enquiries</button>'+
+    '<button class="btn btn-ghost" data-go="calendar">Add to Calendar</button></div></div>';
+
+  $('#panel-overview').innerHTML = html;
+  $('#panel-overview').querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.go)));
+  $('#qaMeeting').addEventListener('click', newMeetingModal);
+}
+function mtgColor(type){ return EVENT_COLORS[type]?type:({Supervision:'Meeting','LAC Review':'Review','Team Meeting':'Meeting',Other:'Personal'})[type]||'Meeting'; }
+
+/* ════════════════════════════════════════════════════
+   ENQUIRIES
+   ════════════════════════════════════════════════════ */
+let enqFilter={type:'all',status:'all',search:''};
+function renderEnquiries(){
+  let html =
+    '<div class="card" style="padding:1.3rem">'+
+    '<div class="chips" id="typeChips">'+
+      [['all','All'],['become','Become a Carer'],['refer','Refer a Child'],['info','Request Info'],['social_worker','Social Worker']]
+      .map(([v,l])=>'<div class="chip'+(enqFilter.type===v?' on':'')+'" data-type="'+v+'">'+l+'</div>').join('')+'</div>'+
+    '<div style="display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem">'+
+      '<select class="inp" id="stFilter" style="width:auto">'+
+        [['all','All Statuses'],['new','New'],['contacted','Contacted'],['in_progress','In Progress'],['resolved','Resolved']]
+        .map(([v,l])=>'<option value="'+v+'"'+(enqFilter.status===v?' selected':'')+'>'+l+'</option>').join('')+'</select>'+
+      '<input class="inp" id="enqSearch" placeholder="Search name or email…" style="flex:1;min-width:200px" value="'+esc(enqFilter.search)+'">'+
+    '</div>'+
+    '<div id="enqTableWrap"></div></div>';
+  $('#panel-enquiries').innerHTML = html;
+  $('#typeChips').querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{enqFilter.type=c.dataset.type;renderEnquiries();}));
+  $('#stFilter').addEventListener('change',e=>{enqFilter.status=e.target.value;drawEnqTable();});
+  $('#enqSearch').addEventListener('input',e=>{enqFilter.search=e.target.value;drawEnqTable();});
+  drawEnqTable();
+}
+function filteredEnq(){
+  return get('efc_enquiries').filter(e=>{
+    if(enqFilter.type!=='all'){ const map={become:['become','carer'],refer:['refer'],info:['info'],social_worker:['social_worker']};
+      if(!map[enqFilter.type].includes(e.interest)) return false; }
+    if(enqFilter.status!=='all' && e.status!==enqFilter.status) return false;
+    if(enqFilter.search){ const q=enqFilter.search.toLowerCase();
+      if(!(e.first+' '+e.last+' '+e.email).toLowerCase().includes(q)) return false; }
+    return true;
+  });
+}
+function drawEnqTable(){
+  const list=filteredEnq();
+  if(!list.length){ $('#enqTableWrap').innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg><div>No enquiries match your filters.</div></div>'; return; }
+  $('#enqTableWrap').innerHTML =
+    '<table><thead><tr><th></th><th>Name</th><th>Email</th><th>Phone</th><th>Type</th><th>Date</th><th>Status</th><th>Assigned</th><th>Actions</th></tr></thead><tbody>'+
+    list.map(e=>{ const a=staffById(e.assignedTo);
+      return '<tr class="clickable" data-id="'+e.id+'">'+
+      '<td><input type="checkbox" onclick="event.stopPropagation()"></td>'+
+      '<td><strong>'+esc(e.first+' '+e.last)+'</strong></td>'+
+      '<td>'+esc(e.email)+'</td><td>'+esc(e.phone)+'</td>'+
+      '<td><span class="badge" style="background:'+interestColor(e.interest)+'">'+interestLabel(e.interest)+'</span></td>'+
+      '<td>'+fmtDate(e.timestamp)+'</td>'+
+      '<td><span class="status st-'+e.status+'">'+statusLabel(e.status)+'</span></td>'+
+      '<td>'+(a?'<span style="display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem">'+avatar(a,24)+a.firstName+'</span>':'<span style="color:#bbb">—</span>')+'</td>'+
+      '<td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEnq(\''+e.id+'\')">View</button>'+
+      (e.status==='new'?' <button class="btn btn-purple btn-sm" onclick="event.stopPropagation();markContacted(\''+e.id+'\')">Mark contacted</button>':'')+'</td>'+
+      '</tr>';
+    }).join('')+'</tbody></table>';
+  $('#enqTableWrap').querySelectorAll('tr.clickable').forEach(r=>r.addEventListener('click',()=>openEnq(r.dataset.id)));
+}
+function markContacted(id){
+  const list=get('efc_enquiries'); const e=list.find(x=>x.id===id); if(e)e.status='contacted';
+  set('efc_enquiries',list); drawEnqTable(); refreshBadges();
+}
+function openEnq(id){
+  const e=get('efc_enquiries').find(x=>x.id===id); if(!e)return;
+  const assignOpts='<option value="">Unassigned</option>'+STAFF.map(s=>'<option value="'+s.id+'"'+(e.assignedTo===s.id?' selected':'')+'>'+esc(s.name)+'</option>').join('');
+  const stOpts=['new','contacted','in_progress','resolved'].map(s=>'<option value="'+s+'"'+(e.status===s?' selected':'')+'>'+statusLabel(s)+'</option>').join('');
+  $('#drawer').innerHTML =
+    '<div class="drawer-h"><div><span class="badge" style="background:'+interestColor(e.interest)+'">'+interestLabel(e.interest)+'</span>'+
+    '<h2 class="serif" style="font-size:1.4rem;color:var(--purple-d);margin-top:.5rem">'+esc(e.first+' '+e.last)+'</h2>'+
+    '<div style="font-size:.8rem;color:#9ca3af">Received '+fmtDate(e.timestamp)+'</div></div>'+
+    '<button class="close-x" onclick="closeDrawer()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'+
+    '<div class="drawer-b">'+
+      '<div class="detail-row"><span class="k">Email</span><span class="v"><a href="mailto:'+esc(e.email)+'">'+esc(e.email)+'</a></span></div>'+
+      '<div class="detail-row"><span class="k">Phone</span><span class="v">'+esc(e.phone)+'</span></div>'+
+      (e.org?'<div class="detail-row"><span class="k">Organisation</span><span class="v">'+esc(e.org)+'</span></div>':'')+
+      (e.child_age?'<div class="detail-row"><span class="k">Child age(s)</span><span class="v">'+esc(e.child_age)+'</span></div>':'')+
+      (e.urgency?'<div class="detail-row"><span class="k">Urgency</span><span class="v" style="text-transform:capitalize">'+esc(e.urgency)+'</span></div>':'')+
+      '<div style="margin:1rem 0"><div class="k" style="color:#8b8a96;font-size:.8rem;margin-bottom:.3rem">Message</div><div style="background:var(--cream);padding:.8rem;border-radius:10px;font-size:.86rem">'+esc(e.message||'—')+'</div></div>'+
+      '<div class="fl"><label>Status</label><select class="inp" id="dStatus">'+stOpts+'</select></div>'+
+      '<div class="fl"><label>Assign to</label><select class="inp" id="dAssign">'+assignOpts+'</select></div>'+
+      '<button class="btn btn-primary" style="width:100%" onclick="saveEnq(\''+e.id+'\')">Save changes</button>'+
+      '<div style="margin-top:1.5rem"><label style="font-weight:600;font-size:.85rem">Notes</label>'+
+        '<textarea class="inp" id="dNote" rows="3" placeholder="Add a note…" style="margin-top:.4rem;resize:vertical"></textarea>'+
+        '<button class="btn btn-ghost btn-sm" style="margin-top:.5rem" onclick="addNote(\''+e.id+'\')">Add Note</button>'+
+        '<div class="notes-list" id="dNotes">'+notesHtml(e.notes)+'</div>'+
+      '</div>'+
+    '</div>';
+  showDrawer();
+}
+function notesHtml(notes){ return (notes&&notes.length)?notes.map(n=>'<div class="note">'+esc(n.text)+'<small>'+esc(n.author)+' · '+new Date(n.ts).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+'</small></div>').join(''):'<div style="color:#bbb;font-size:.8rem;padding:.5rem 0">No notes yet.</div>'; }
+function saveEnq(id){
+  const list=get('efc_enquiries'); const e=list.find(x=>x.id===id); if(!e)return;
+  e.status=$('#dStatus').value; e.assignedTo=$('#dAssign').value||null;
+  set('efc_enquiries',list); drawEnqTable(); refreshBadges(); closeDrawer();
+}
+function addNote(id){
+  const txt=$('#dNote').value.trim(); if(!txt)return;
+  const list=get('efc_enquiries'); const e=list.find(x=>x.id===id); if(!e)return;
+  e.notes=e.notes||[]; e.notes.push({text:txt,author:USER.name,ts:new Date().toISOString()});
+  set('efc_enquiries',list); $('#dNote').value=''; $('#dNotes').innerHTML=notesHtml(e.notes);
+}
+
+/* ════════════════════════════════════════════════════
+   CALENDAR
+   ════════════════════════════════════════════════════ */
+let calRef=new Date();
+function renderCalendar(){
+  const y=calRef.getFullYear(), m=calRef.getMonth();
+  const first=new Date(y,m,1); let startDow=(first.getDay()+6)%7; // Mon=0
+  const days=new Date(y,m+1,0).getDate();
+  const events=get('efc_events');
+  const today=new Date();
+  const dows=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+  let cells='';
+  for(let i=0;i<startDow;i++) cells+='<div class="cal-cell empty"></div>';
+  for(let d=1;d<=days;d++){
+    const iso=new Date(y,m,d).toISOString().slice(0,10);
+    const dayEv=events.filter(e=>e.date.slice(0,10)===iso);
+    const isToday=today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===d;
+    cells+='<div class="cal-cell'+(isToday?' today':'')+'" data-date="'+iso+'"><div class="dn">'+d+'</div>'+
+      dayEv.map(e=>'<div class="cal-ev" style="background:'+(EVENT_COLORS[e.type]||'#6b7280')+'" title="'+esc(e.title)+'">'+esc(e.title)+'</div>').join('')+'</div>';
+  }
+  $('#panel-calendar').innerHTML =
+    '<div class="card" style="padding:1.4rem">'+
+    '<div class="cal-head"><button class="cal-nav" id="calPrev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>'+
+    '<h2 class="serif">'+calRef.toLocaleDateString('en-GB',{month:'long',year:'numeric'})+'</h2>'+
+    '<button class="cal-nav" id="calNext"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>'+
+    '<button class="btn btn-primary btn-sm" style="margin-left:auto" id="calAdd">+ Add Event</button></div>'+
+    '<div class="cal-grid">'+dows.map(d=>'<div class="cal-dow">'+d+'</div>').join('')+cells+'</div>'+
+    '<div class="cal-legend">'+Object.entries(EVENT_COLORS).map(([k,c])=>'<span><i style="background:'+c+'"></i>'+k+'</span>').join('')+'</div>'+
+    '</div>';
+  $('#calPrev').addEventListener('click',()=>{calRef.setMonth(calRef.getMonth()-1);renderCalendar();});
+  $('#calNext').addEventListener('click',()=>{calRef.setMonth(calRef.getMonth()+1);renderCalendar();});
+  $('#calAdd').addEventListener('click',()=>eventModal(new Date().toISOString().slice(0,10)));
+  $('#panel-calendar').querySelectorAll('.cal-cell:not(.empty)').forEach(c=>c.addEventListener('click',()=>eventModal(c.dataset.date)));
+}
+function eventModal(dateIso){
+  openModal('Add Event',
+    '<div class="fl"><label>Title</label><input class="inp" id="evTitle" placeholder="Event title"></div>'+
+    '<div class="fl"><label>Type</label><select class="inp" id="evType">'+Object.keys(EVENT_COLORS).map(t=>'<option>'+t+'</option>').join('')+'</select></div>'+
+    '<div class="fl"><label>Date</label><input class="inp" type="date" id="evDate" value="'+dateIso+'"></div>'+
+    '<div class="fl"><label>Time</label><input class="inp" type="time" id="evTime" value="09:00"></div>'+
+    '<div class="fl"><label>Notes</label><textarea class="inp" id="evNotes" rows="2"></textarea></div>',
+    '<button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="evSave">Save Event</button>');
+  $('#evSave').addEventListener('click',()=>{
+    const t=$('#evTitle').value.trim(); if(!t){$('#evTitle').focus();return;}
+    const list=get('efc_events');
+    list.push({id:'ev_'+Date.now(),date:$('#evDate').value,title:t,type:$('#evType').value,time:$('#evTime').value,notes:$('#evNotes').value.trim()});
+    set('efc_events',list); closeModal(); renderCalendar();
+  });
+}
+
+/* ════════════════════════════════════════════════════
+   MEETINGS
+   ════════════════════════════════════════════════════ */
+let mtgTab='upcoming';
+function renderMeetings(){
+  const all=get('efc_meetings').sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const now=new Date();
+  let list = mtgTab==='upcoming'?all.filter(m=>new Date(m.date)>=now):mtgTab==='past'?all.filter(m=>new Date(m.date)<now):all;
+  $('#panel-meetings').innerHTML =
+    '<div class="section-h"><div class="tabs" style="margin-bottom:0;border:none">'+
+    [['upcoming','Upcoming'],['past','Past'],['all','All']].map(([v,l])=>'<div class="tab'+(mtgTab===v?' on':'')+'" data-tab="'+v+'">'+l+'</div>').join('')+
+    '</div><button class="btn btn-primary" id="newMtg">+ New Meeting</button></div>'+
+    (list.length?'<div class="grid cards2">'+list.map(mtgCard).join('')+'</div>':'<div class="card empty-state">No '+mtgTab+' meetings.</div>');
+  $('#panel-meetings').querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{mtgTab=t.dataset.tab;renderMeetings();}));
+  $('#newMtg').addEventListener('click',newMeetingModal);
+  $('#panel-meetings').querySelectorAll('[data-mtg]').forEach(b=>b.addEventListener('click',()=>openMeeting(b.dataset.mtg)));
+}
+function mtgCard(m){
+  const ec=EVENT_COLORS[mtgColor(m.type)];
+  return '<div class="card pcard"><div style="display:flex;justify-content:space-between;align-items:flex-start">'+
+    '<h3 style="font-size:1rem;color:var(--purple-d)">'+esc(m.title)+'</h3><span class="badge" style="background:'+ec+'">'+esc(m.type)+'</span></div>'+
+    '<div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg>'+fmtDay(m.date)+' · '+new Date(m.date).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' · '+esc(m.duration)+'</div>'+
+    '<div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>'+esc(m.location)+'</div>'+
+    '<div class="av-stack" style="margin-top:.6rem">'+m.attendees.slice(0,4).map(id=>avatar(staffById(id),28)).join('')+(m.attendees.length>4?'<span class="av-c" style="width:28px;height:28px;background:#9ca3af">+'+(m.attendees.length-4)+'</span>':'')+'</div>'+
+    '<p style="font-size:.8rem;color:#6b7280;margin-top:.7rem">'+esc((m.notes||'').slice(0,100))+((m.notes||'').length>100?'…':'')+'</p>'+
+    '<button class="btn btn-ghost btn-sm" style="margin-top:.8rem;align-self:flex-start" data-mtg="'+m.id+'">View</button></div>';
+}
+function openMeeting(id){
+  const m=get('efc_meetings').find(x=>x.id===id); if(!m)return;
+  openModal(m.title,
+    '<div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem"><span class="badge" style="background:'+EVENT_COLORS[mtgColor(m.type)]+'">'+esc(m.type)+'</span>'+
+    '<span class="badge" style="background:#6b7280">'+fmtDay(m.date)+' '+new Date(m.date).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+'</span>'+
+    '<span class="badge" style="background:#78350F">'+esc(m.duration)+'</span></div>'+
+    '<div class="detail-row"><span class="k">Location</span><span class="v">'+esc(m.location)+'</span></div>'+
+    '<div style="margin:.9rem 0"><div class="k" style="color:#8b8a96;font-size:.8rem;margin-bottom:.4rem">Attendees</div>'+
+      m.attendees.map(aid=>{const s=staffById(aid);return '<span style="display:inline-flex;align-items:center;gap:.4rem;background:var(--cream);padding:.25rem .6rem;border-radius:30px;margin:.15rem;font-size:.8rem">'+avatar(s,24)+(s?esc(s.firstName):'?')+'</span>';}).join('')+'</div>'+
+    '<div class="fl"><label>Agenda / Notes</label><textarea class="inp" id="mtgNotes" rows="5" style="resize:vertical">'+esc(m.notes||'')+'</textarea></div>',
+    '<button class="btn btn-ghost" id="dlNotes">Download Notes</button><button class="btn btn-primary" data-close>Close</button>');
+  $('#mtgNotes').addEventListener('blur',()=>{
+    const list=get('efc_meetings'); const mm=list.find(x=>x.id===id); mm.notes=$('#mtgNotes').value; set('efc_meetings',list);
+  });
+  $('#dlNotes').addEventListener('click',()=>{
+    const txt='Meeting: '+m.title+'\nType: '+m.type+'\nDate: '+fmtDay(m.date)+'\nDuration: '+m.duration+'\nLocation: '+m.location+'\n\nNotes:\n'+($('#mtgNotes').value||'');
+    const a=document.createElement('a'); a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);
+    a.download=m.title.replace(/\s+/g,'_')+'.txt'; a.click();
+  });
+}
+function newMeetingModal(){
+  openModal('New Meeting',
+    '<div class="fl"><label>Title</label><input class="inp" id="nmTitle" placeholder="Meeting title"></div>'+
+    '<div class="fl"><label>Type</label><select class="inp" id="nmType">'+['Supervision','LAC Review','Panel','Team Meeting','Training','Other'].map(t=>'<option>'+t+'</option>').join('')+'</select></div>'+
+    '<div style="display:flex;gap:.8rem"><div class="fl" style="flex:1"><label>Date</label><input class="inp" type="date" id="nmDate" value="'+new Date().toISOString().slice(0,10)+'"></div>'+
+    '<div class="fl" style="flex:1"><label>Start Time</label><input class="inp" type="time" id="nmTime" value="09:30"></div></div>'+
+    '<div class="fl"><label>Duration</label><select class="inp" id="nmDur">'+['30min','1hr','1.5hr','2hr','3hr','All Day'].map(d=>'<option>'+d+'</option>').join('')+'</select></div>'+
+    '<div class="fl"><label>Attendees</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:.3rem;max-height:140px;overflow-y:auto;border:1px solid #eee;padding:.5rem;border-radius:10px">'+
+      STAFF.map(s=>'<label style="display:flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:400"><input type="checkbox" class="nmAtt" value="'+s.id+'">'+esc(s.firstName)+'</label>').join('')+'</div></div>'+
+    '<div class="fl"><label>Location / Video link</label><input class="inp" id="nmLoc" placeholder="Boardroom or https://…"></div>'+
+    '<div class="fl"><label>Agenda / Notes</label><textarea class="inp" id="nmNotes" rows="3"></textarea></div>',
+    '<button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="nmSave">Save Meeting</button>');
+  $('#nmSave').addEventListener('click',()=>{
+    const t=$('#nmTitle').value.trim(); if(!t){$('#nmTitle').focus();return;}
+    const att=[...document.querySelectorAll('.nmAtt:checked')].map(c=>c.value);
+    const list=get('efc_meetings');
+    list.push({id:'mtg_'+Date.now(),title:t,type:$('#nmType').value,date:$('#nmDate').value+'T'+$('#nmTime').value,
+      duration:$('#nmDur').value,attendees:att,location:$('#nmLoc').value.trim()||'TBC',notes:$('#nmNotes').value.trim()});
+    set('efc_meetings',list); closeModal();
+    if($('#panel-meetings').classList.contains('active')) renderMeetings();
+  });
+}
+
+/* ════════════════════════════════════════════════════
+   FOSTER CARERS
+   ════════════════════════════════════════════════════ */
+let carerFilter={search:'',ssw:'all',status:'all'};
+const CARER_STATUS={active:{l:'Active',c:'#dcfce7',t:'#15803d'},on_leave:{l:'On Leave',c:'#fef3c7',t:'#b45309'},assessment:{l:'Assessment',c:'#dbeafe',t:'#1d4ed8'}};
+function renderCarers(){
+  $('#panel-carers').innerHTML =
+    '<div class="card" style="padding:1rem;margin-bottom:1.2rem;display:flex;gap:.8rem;flex-wrap:wrap;align-items:center">'+
+    '<input class="inp" id="carerSearch" placeholder="Search carers…" style="flex:1;min-width:180px" value="'+esc(carerFilter.search)+'">'+
+    '<select class="inp" id="carerSsw" style="width:auto"><option value="all">All SSWs</option>'+STAFF.filter(s=>s.access==='social_worker'||s.access==='recruitment').map(s=>'<option value="'+s.id+'"'+(carerFilter.ssw===s.id?' selected':'')+'>'+esc(s.firstName)+'</option>').join('')+'</select>'+
+    '<select class="inp" id="carerStatus" style="width:auto"><option value="all">All Statuses</option>'+Object.entries(CARER_STATUS).map(([v,o])=>'<option value="'+v+'"'+(carerFilter.status===v?' selected':'')+'>'+o.l+'</option>').join('')+'</select>'+
+    '</div><div id="carerGrid"></div>';
+  $('#carerSearch').addEventListener('input',e=>{carerFilter.search=e.target.value;drawCarers();});
+  $('#carerSsw').addEventListener('change',e=>{carerFilter.ssw=e.target.value;drawCarers();});
+  $('#carerStatus').addEventListener('change',e=>{carerFilter.status=e.target.value;drawCarers();});
+  drawCarers();
+}
+function drawCarers(){
+  let list=get('efc_carers').filter(c=>{
+    if(carerFilter.search&&!c.name.toLowerCase().includes(carerFilter.search.toLowerCase()))return false;
+    if(carerFilter.ssw!=='all'&&c.ssw!==carerFilter.ssw)return false;
+    if(carerFilter.status!=='all'&&c.status!==carerFilter.status)return false;
+    return true;
+  });
+  if(!list.length){ $('#carerGrid').innerHTML='<div class="card empty-state">No carers match your filters.</div>'; return; }
+  $('#carerGrid').innerHTML='<div class="grid cards3">'+list.map(c=>{
+    const ssw=staffById(c.ssw); const st=CARER_STATUS[c.status]; const current=c.placements.filter(p=>!p.end).length;
+    return '<div class="card pcard"><div class="ph"><div class="photo">'+initials(c.name)+'</div>'+
+      '<div><h3>'+esc(c.name)+'</h3><div class="sub">'+(c.approved?'Approved '+fmtDate(c.approved):'In assessment')+'</div></div></div>'+
+      '<div>'+c.types.map(t=>'<span class="tag" style="background:'+placeColor(t)+'">'+t+'</span>').join('')+'</div>'+
+      '<div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0116 0"/></svg>SSW: '+(ssw?esc(ssw.firstName):'—')+'</div>'+
+      '<div style="margin-top:.5rem"><span class="status" style="background:'+st.c+';color:'+st.t+'">'+st.l+'</span></div>'+
+      '<div class="meta-row">'+(c.nextReview?'Next review: '+fmtDate(c.nextReview):'No review scheduled')+' · '+current+' current placement'+(current!==1?'s':'')+'</div>'+
+      '<button class="btn btn-ghost btn-sm" style="margin-top:.8rem;align-self:flex-start" data-carer="'+c.id+'">View Profile</button></div>';
+  }).join('')+'</div>';
+  $('#carerGrid').querySelectorAll('[data-carer]').forEach(b=>b.addEventListener('click',()=>openCarer(b.dataset.carer)));
+}
+function placeColor(t){ return ({Emergency:'#E85D4A','Short-term':'#F59E0B','Long-term':'#78350F',UASC:'#0F766E',Therapeutic:'#3d2a8a'})[t]||'#6b7280'; }
+let carerTab='overview', carerCur=null;
+function openCarer(id){
+  carerCur=get('efc_carers').find(c=>c.id===id); carerTab='overview'; if(!carerCur)return;
+  drawCarerModal();
+}
+function drawCarerModal(){
+  const c=carerCur; const st=CARER_STATUS[c.status]; const ssw=staffById(c.ssw);
+  let tabBody='';
+  if(carerTab==='overview'){
+    tabBody='<div class="detail-row"><span class="k">Area</span><span class="v">'+esc(c.area)+'</span></div>'+
+      '<div class="detail-row"><span class="k">Household</span><span class="v">'+esc(c.household)+'</span></div>'+
+      '<div class="detail-row"><span class="k">Approved</span><span class="v">'+(c.approved?fmtDate(c.approved):'Pending')+'</span></div>'+
+      '<div class="detail-row"><span class="k">Approval type</span><span class="v">'+c.types.join(', ')+'</span></div>'+
+      '<div class="detail-row"><span class="k">SSW</span><span class="v">'+(ssw?esc(ssw.name):'—')+'</span></div>'+
+      '<div class="detail-row"><span class="k">Next review</span><span class="v">'+(c.nextReview?fmtDate(c.nextReview):'—')+'</span></div>';
+  } else if(carerTab==='placements'){
+    tabBody = c.placements.length?'<table><thead><tr><th>Child</th><th>Age</th><th>Type</th><th>Start</th><th>End</th></tr></thead><tbody>'+
+      c.placements.map(p=>'<tr><td>'+esc(p.child)+'</td><td>'+p.age+'</td><td><span class="tag" style="background:'+placeColor(p.type)+'">'+p.type+'</span></td><td>'+fmtDate(p.start)+'</td><td>'+(p.end?fmtDate(p.end):'<strong style="color:var(--teal)">Current</strong>')+'</td></tr>').join('')+'</tbody></table>'
+      :'<div class="empty-state">No placements recorded.</div>';
+  } else if(carerTab==='reviews'){
+    tabBody = c.reviews.length?c.reviews.map(r=>'<div class="note"><strong>'+fmtDate(r.date)+'</strong> — '+esc(r.outcome)+'<br>'+esc(r.notes)+'</div>').join('')
+      :'<div class="empty-state">No reviews recorded.</div>';
+  } else {
+    tabBody='<textarea class="inp" id="carerNote" rows="3" placeholder="Add a note…"></textarea>'+
+      '<button class="btn btn-ghost btn-sm" style="margin-top:.5rem" id="carerNoteAdd">Add Note</button>'+
+      '<div class="notes-list">'+notesHtml(c.cnotes)+'</div>';
+  }
+  openModal('',
+    '<div style="display:flex;gap:1rem;align-items:center;margin-bottom:1rem"><div class="photo" style="width:64px;height:64px;border-radius:50%;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.4rem">'+initials(c.name)+'</div>'+
+    '<div><h3 class="serif" style="font-size:1.3rem;color:var(--purple-d)">'+esc(c.name)+'</h3>'+
+    '<div style="font-size:.78rem;color:#9ca3af">ID: '+esc(c.id)+'</div>'+
+    '<span class="status" style="background:'+st.c+';color:'+st.t+';margin-top:.3rem">'+st.l+'</span></div></div>'+
+    '<div class="tabs">'+[['overview','Overview'],['placements','Placements'],['reviews','Reviews'],['notes','Notes']].map(([v,l])=>'<div class="tab'+(carerTab===v?' on':'')+'" data-ctab="'+v+'">'+l+'</div>').join('')+'</div>'+
+    '<div>'+tabBody+'</div>',
+    '<button class="btn btn-primary" data-close>Close</button>');
+  $('#modalBox').querySelectorAll('[data-ctab]').forEach(t=>t.addEventListener('click',()=>{carerTab=t.dataset.ctab;drawCarerModal();}));
+  if(carerTab==='notes'){ $('#carerNoteAdd').addEventListener('click',()=>{
+    const txt=$('#carerNote').value.trim(); if(!txt)return;
+    const list=get('efc_carers'); const cc=list.find(x=>x.id===c.id);
+    cc.cnotes=cc.cnotes||[]; cc.cnotes.push({text:txt,author:USER.name,ts:new Date().toISOString()});
+    set('efc_carers',list); carerCur=cc; drawCarerModal();
+  }); }
+}
+
+/* ════════════════════════════════════════════════════
+   STAFF
+   ════════════════════════════════════════════════════ */
+function staffPhoto(s,size){ size=size||54; return '<img class="photo" style="width:'+size+'px;height:'+size+'px" src="'+s.photo+'" alt="'+esc(s.name)+'" onerror="this.outerHTML=\'<div class=\\\'photo\\\' style=\\\'width:'+size+'px;height:'+size+'px\\\'>'+initials(s.name)+'</div>\'">'; }
+function renderStaff(){
+  const rose=STAFF[0]; const rest=STAFF.slice(1);
+  let html =
+    '<div class="card featured">'+staffPhoto(rose,96)+
+    '<div style="flex:1"><div style="display:flex;align-items:center;gap:.7rem"><h2 class="serif">'+esc(rose.name)+'</h2><span class="ceo-badge">CEO</span></div>'+
+    '<div style="color:#6b7280;margin:.3rem 0">'+esc(rose.role)+' · '+esc(rose.dept)+'</div>'+
+    '<div>'+rose.tags.map(t=>'<span class="tag" style="background:'+t.color+'">'+esc(t.label)+'</span>').join('')+'</div>'+
+    '<p style="font-size:.86rem;color:#4b5563;margin-top:.6rem;max-width:48rem">'+esc(rose.bio)+'</p>'+
+    '<div style="margin-top:.7rem"><button class="btn btn-purple btn-sm" data-staff="'+rose.id+'">View Profile</button> '+
+    '<a class="btn btn-ghost btn-sm" href="mailto:'+rose.email+'">Message</a></div></div></div>';
+
+  html += '<div class="grid cards3" style="margin-top:1.4rem">'+rest.map(s=>
+    '<div class="card pcard" style="cursor:pointer" data-staff="'+s.id+'"><div class="ph">'+staffPhoto(s,54)+
+    '<div><h3>'+esc(s.name)+'</h3><div class="sub">'+esc(s.role)+'</div></div></div>'+
+    '<span class="badge" style="background:#eef0fb;color:var(--purple)">'+esc(s.dept)+'</span>'+
+    '<div style="margin:.5rem 0">'+s.tags.map(t=>'<span class="tag" style="background:'+t.color+'">'+esc(t.label)+'</span>').join('')+'</div>'+
+    '<div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>'+s.activeCases+' active case'+(s.activeCases!==1?'s':'')+' · Joined '+fmtDate(s.joined)+'</div>'+
+    '<div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6"/></svg><a href="mailto:'+s.email+'" onclick="event.stopPropagation()">'+esc(s.email)+'</a></div>'+
+    '<div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.1 1.22 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.46-.46a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>'+esc(s.phone)+'</div>'+
+    '<button class="btn btn-ghost btn-sm" style="margin-top:.7rem;align-self:flex-start" onclick="event.stopPropagation();location.href=\'mailto:'+s.email+'\'">Message</button></div>'
+  ).join('')+'</div>';
+
+  $('#panel-staff').innerHTML=html;
+  $('#panel-staff').querySelectorAll('[data-staff]').forEach(el=>el.addEventListener('click',e=>{ if(e.target.closest('a'))return; openStaff(el.dataset.staff); }));
+}
+function openStaff(id){
+  const s=staffById(id); if(!s)return;
+  openModal('',
+    '<div style="text-align:center;margin-bottom:1rem">'+staffPhoto(s,100)+
+    '<h3 class="serif" style="font-size:1.5rem;color:var(--purple-d);margin-top:.6rem">'+esc(s.name)+'</h3>'+
+    '<div style="color:#6b7280">'+esc(s.role)+'</div>'+
+    '<div style="margin-top:.5rem">'+s.tags.map(t=>'<span class="tag" style="background:'+t.color+'">'+esc(t.label)+'</span>').join('')+'</div></div>'+
+    '<p style="font-size:.88rem;color:#4b5563;line-height:1.6;margin-bottom:1rem">'+esc(s.bio)+'</p>'+
+    '<div class="detail-row"><span class="k">Department</span><span class="v">'+esc(s.dept)+'</span></div>'+
+    '<div class="detail-row"><span class="k">Email</span><span class="v"><a href="mailto:'+s.email+'">'+esc(s.email)+'</a></span></div>'+
+    '<div class="detail-row"><span class="k">Phone</span><span class="v">'+esc(s.phone)+'</span></div>'+
+    '<div class="detail-row"><span class="k">Joined</span><span class="v">'+fmtDate(s.joined)+'</span></div>'+
+    '<div class="detail-row"><span class="k">Active cases</span><span class="v">'+s.activeCases+'</span></div>',
+    '<a class="btn btn-primary" href="mailto:'+s.email+'">Send Email</a><button class="btn btn-ghost" data-close>Close</button>');
+}
+
+/* ════════════════════════════════════════════════════
+   MY PROFILE
+   ════════════════════════════════════════════════════ */
+function renderProfile(){
+  const s=USER;
+  $('#panel-profile').innerHTML =
+    '<div class="card" style="padding:1.8rem;max-width:720px">'+
+    '<div style="display:flex;gap:1.3rem;align-items:center;flex-wrap:wrap">'+staffPhoto(s,100)+
+    '<div><h2 class="serif" style="font-size:1.6rem;color:var(--purple-d)">'+esc(s.name)+'</h2>'+
+    '<div style="color:#6b7280">'+esc(s.role)+' · '+esc(s.dept)+'</div>'+
+    '<div style="margin-top:.5rem">'+s.tags.map(t=>'<span class="tag" style="background:'+t.color+'">'+esc(t.label)+'</span>').join('')+'</div></div></div>'+
+    '<div class="fl" style="margin-top:1.4rem"><label>Bio</label><textarea class="inp" id="pfBio" rows="3" style="resize:vertical">'+esc(s.bio)+'</textarea></div>'+
+    '<div style="display:flex;gap:.8rem;flex-wrap:wrap"><div class="fl" style="flex:1;min-width:220px"><label>Email (read only)</label><input class="inp" value="'+esc(s.email)+'" readonly style="background:#f5f4fa"></div>'+
+    '<div class="fl" style="flex:1;min-width:180px"><label>Phone</label><input class="inp" id="pfPhone" value="'+esc(s.phone)+'"></div></div>'+
+    '<div class="fl"><label>Password</label><div style="position:relative"><input class="inp" id="pfPwd" type="password" value="'+esc(s.password||'••••••••')+'" readonly>'+
+    '<button class="btn btn-ghost btn-sm" id="pfEye" style="position:absolute;right:6px;top:50%;transform:translateY(-50%)">Show</button></div>'+
+    '<small style="color:#9ca3af">Demo only — contact IT to change your password.</small></div>'+
+    '<div style="margin-top:1.4rem"><label style="font-weight:600;font-size:.85rem">Recent activity</label><div class="notes-list">'+
+      recentActivityHtml()+'</div></div>'+
+    '<button class="btn btn-ghost" id="pfLogout" style="margin-top:1.4rem;color:var(--coral);border-color:#fecaca">Log out</button>'+
+    '</div>';
+  $('#pfBio').addEventListener('blur',()=>{ USER.bio=$('#pfBio').value; sessionStorage.setItem('efc_user',JSON.stringify(USER)); });
+  $('#pfPhone').addEventListener('blur',()=>{ USER.phone=$('#pfPhone').value; sessionStorage.setItem('efc_user',JSON.stringify(USER)); });
+  $('#pfEye').addEventListener('click',()=>{ const p=$('#pfPwd'); const sh=p.type==='password'; p.type=sh?'text':'password'; $('#pfEye').textContent=sh?'Hide':'Show'; });
+  $('#pfLogout').addEventListener('click',logout);
+}
+function recentActivityHtml(){
+  const enq=get('efc_enquiries'), m=get('efc_meetings');
+  const items=[];
+  if(enq[0]) items.push({t:'Latest enquiry received from '+enq[0].first+' '+enq[0].last, ts:enq[0].timestamp});
+  const upcoming=m.filter(x=>new Date(x.date)>=new Date()).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];
+  if(upcoming) items.push({t:'Next meeting: '+upcoming.title, ts:upcoming.date});
+  items.push({t:'Signed in to the staff portal', ts:new Date().toISOString()});
+  return items.slice(0,3).map(i=>'<div class="note">'+esc(i.t)+'<small>'+fmtDate(i.ts)+'</small></div>').join('');
+}
+
+/* ════════════════════════════════════════════════════
+   MODAL / DRAWER / BELL
+   ════════════════════════════════════════════════════ */
+function openModal(title,body,footer){
+  $('#modalBox').innerHTML =
+    (title?'<div class="modal-h"><h3>'+esc(title)+'</h3><button class="close-x" data-close><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>':'')+
+    '<div class="modal-b">'+body+'</div>'+
+    (footer?'<div class="modal-f">'+footer+'</div>':'');
+  $('#modal').classList.add('show');
+  $('#modalBox').querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeModal));
+}
+function closeModal(){ $('#modal').classList.remove('show'); }
+$('#modal').querySelector('.modal-bg').addEventListener('click',closeModal);
+
+function showDrawer(){ $('#drawer').classList.add('show'); $('#overlay').classList.add('show'); }
+function closeDrawer(){ $('#drawer').classList.remove('show'); $('#overlay').classList.remove('show'); }
+$('#overlay').addEventListener('click',closeDrawer);
+
+$('#bell').addEventListener('click',e=>{
+  e.stopPropagation();
+  const newEnq=get('efc_enquiries').filter(x=>x.status==='new').slice(0,5);
+  $('#bellDd').innerHTML='<div class="bh">New Enquiries</div>'+
+    (newEnq.length?newEnq.map(x=>'<div class="bi" data-bid="'+x.id+'"><strong>'+esc(x.first+' '+x.last)+'</strong><br><small>'+interestLabel(x.interest)+' · '+fmtDate(x.timestamp)+'</small></div>').join(''):'<div class="empty">No new enquiries.</div>');
+  $('#bellDd').classList.toggle('show');
+  $('#bellDd').querySelectorAll('[data-bid]').forEach(b=>b.addEventListener('click',()=>{$('#bellDd').classList.remove('show');navigate('enquiries');setTimeout(()=>openEnq(b.dataset.bid),50);}));
+});
+document.addEventListener('click',()=>$('#bellDd').classList.remove('show'));
+$('#bellDd').addEventListener('click',e=>e.stopPropagation());
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){closeModal();closeDrawer();$('#bellDd').classList.remove('show');} });
+
+$('#hamb').addEventListener('click',()=>$('#sidebar').classList.toggle('open'));
+
+/* ── Custom cursor ── */
+(function(){
+  const c=document.getElementById('cursor'),d=document.getElementById('cursor-dot');
+  if(!c||!window.matchMedia('(hover:hover)').matches)return;
+  let mx=0,my=0,cx=0,cy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function tick(){cx+=(mx-cx)*.12;cy+=(my-cy)*.12;c.style.left=cx+'px';c.style.top=cy+'px';d.style.left=mx+'px';d.style.top=my+'px';requestAnimationFrame(tick);})();
+  document.querySelectorAll('a,button,[role=button],.nav-item').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('cursor-link'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('cursor-link'));
+  });
+})();
+/* ── Boot ───────────────────────────────── */
+buildNav();
+refreshBadges();
+navigate('overview');
+</script>
+</body>
+</html>

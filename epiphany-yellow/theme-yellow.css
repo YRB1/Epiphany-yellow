@@ -1,0 +1,155 @@
+/* Yellow/amber colour theme — overrides brand variables from styles.css */
+:root {
+  --purple:   #78350F;
+  --purple-d: #431407;
+  --purple-m: #92400E;
+  --purple-t: rgba(120,53,15,.08);
+  --gold:     #F59E0B;
+  --gold-l:   #FCD34D;
+  --gold-d:   #D97706;
+  --gold-t:   rgba(245,158,11,.12);
+  --teal:     #0F766E;
+  --teal-l:   #14B8A6;
+  --teal-d:   #0D9488;
+  --cream:    #FFFBEB;
+  --sand:     #FEF3C7;
+  --ink:      #1C0A00;
+}
+
+/* Marquee strip */
+.marquee-strip { background: #F59E0B; }
+.marquee-item  { color: #431407; }
+.marquee-dot   { background: rgba(67,20,7,.3); }
+
+/* Hero slice */
+.hero-slice path { fill: #F59E0B; }
+
+/* Logo box, loader mark */
+.logo-box,
+.loader-mark { background: linear-gradient(135deg,#F59E0B,#FCD34D); }
+.loader-mark svg path { fill: #431407; }
+#loader { background: #431407; }
+
+/* Logo SVG in nav */
+#nav .logo-box svg path { fill: #431407; }
+
+/* Nav */
+#nav.solid { background: rgba(67,20,7,.97); }
+.logo-name { color: #fff; }
+.nav-links a { color: rgba(255,255,255,.65); }
+.nav-cta { background: #F59E0B; color: #431407; box-shadow: 0 4px 16px rgba(245,158,11,.4); }
+.nav-cta:hover { background: #FCD34D; }
+.nav-refer { background: rgba(245,158,11,.15); border-color: rgba(245,158,11,.4); color: #FCD34D; }
+.nav-refer:hover { background: #F59E0B; color: #431407; }
+.nav-tel { color: rgba(255,255,255,.5); }
+
+/* Buttons */
+.btn-gold { background: #F59E0B; color: #431407; box-shadow: 0 4px 20px rgba(245,158,11,.4); }
+.btn-gold:hover { background: #FCD34D; box-shadow: 0 8px 32px rgba(245,158,11,.55); }
+.btn-purple { background: #78350F; }
+.btn-purple:hover { background: #431407; }
+
+/* Drawer */
+#drawer { background: rgba(67,20,7,.97); }
+
+/* Hero section */
+#hero { background: #431407; }
+.slide-mask { background: linear-gradient(108deg,rgba(67,20,7,.94) 0%,rgba(67,20,7,.78) 40%,rgba(120,53,15,.5) 70%,rgba(245,158,11,.08) 100%); }
+
+/* Gradient text */
+.g-text {
+  background: linear-gradient(135deg,#F59E0B 0%,#FCD34D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.g-text-teal {
+  background: linear-gradient(135deg,#0F766E 0%,#14B8A6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Overline accents */
+.overline { color: #D97706; }
+.overline::before { background: #D97706; }
+.overline-light { color: #FCD34D; }
+.overline-light::before { background: #FCD34D; }
+
+/* Progress bar */
+#progress-bar { background: linear-gradient(to right,#F59E0B,#FCD34D); }
+
+/* Scrollbar */
+::-webkit-scrollbar-track { background: #431407; }
+::-webkit-scrollbar-thumb { background: #F59E0B; }
+
+/* Selection */
+::selection { background: rgba(245,158,11,.25); }
+
+/* Mission band */
+#mission-band { background: #78350F; }
+.mb-q span { color: #FCD34D; }
+.mb-line { background: #F59E0B; }
+
+/* UASC section */
+#uasc { background: #431407; }
+.uasc-bg { background: radial-gradient(ellipse 60% 80% at 70% 50%,rgba(245,158,11,.08),transparent); }
+.uasc-pillar { border-left-color: #F59E0B; }
+
+/* Allowances */
+#payments { background: #431407; }
+.pay-deco { background: radial-gradient(circle,rgba(245,158,11,.07),transparent 65%); }
+.feat-badge { background: linear-gradient(to right,#F59E0B,#FCD34D); color: #431407; }
+.pay-card.feat { background: rgba(245,158,11,.1); border-color: rgba(245,158,11,.3); }
+.pc-cta[style*="background:var(--gold)"] { color: #431407; }
+
+/* Why diff panel */
+.wd-left { background: #78350F; }
+.wd-right { background: #431407; }
+
+/* Contact left */
+.contact-left { background: #78350F; }
+.contact-left::after { background: radial-gradient(circle,rgba(245,158,11,.12),transparent 65%); }
+
+/* Accordion open accent */
+.acc-item.open .acc-toggle { background: #F59E0B; }
+.acc-item.open .acc-toggle svg { color: #431407 !important; }
+.acc-q { background: linear-gradient(#D97706,#D97706) no-repeat left bottom / 0% 1px; }
+.acc-item.open .acc-q { background-size: 100% 1px; }
+
+/* Step numbers */
+.step-n {
+  background: linear-gradient(135deg,#F59E0B,#FCD34D);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Form */
+.f-group input:focus,
+.f-group textarea:focus,
+.f-group select:focus { border-color: #F59E0B; box-shadow: 0 0 0 3px rgba(245,158,11,.12); }
+.f-submit { background: #78350F; box-shadow: 0 8px 28px rgba(120,53,15,.28); }
+.f-submit:hover { background: #431407; box-shadow: 0 14px 40px rgba(120,53,15,.42); }
+
+/* Interest tab active */
+.i-tab.on { background: #78350F; border-color: #78350F; }
+.i-tab:hover { border-color: #F59E0B; color: #78350F; }
+
+/* Gold utilities */
+.gold { color: #D97706; }
+.gold-l { color: #FCD34D; }
+
+/* Footer */
+footer { background: #431407; }
+footer::before { background: linear-gradient(to right,transparent,rgba(245,158,11,.35),transparent); }
+.foot-love svg { color: #F59E0B; }
+.soc:hover { background: #F59E0B; border-color: #F59E0B; }
+.soc:hover svg { color: #431407; }
+
+/* Loader fill */
+.loader-fill { background: linear-gradient(90deg,#F59E0B,#FCD34D); }
+
+/* Cursor */
+#cursor { border-color: rgba(245,158,11,.65); }
+#cursor-dot { background: #F59E0B; }
